@@ -61,6 +61,7 @@ $string['printintro'] = 'Display leeloolxpvimeo description';
 $string['printintroexplain'] = 'Display leeloolxpvimeo description above content?';
 
 $string['regular_vimeo_video_id'] = 'Vimeo Video ID';
+$string['regular_vimeo_token'] = 'Vimeo Token to get Thumbnail';
 $string['regular_width'] = 'Width Of Frame';
 $string['regular_height'] = 'Height Of Frame';
 $string['regular_border'] = 'Border Of Frame';

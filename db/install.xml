@@ -12,6 +12,7 @@
         <FIELD NAME="intro" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="introformat" TYPE="int" LENGTH="4" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="vimeo_video_id" TYPE="text" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="vimeo_token" TYPE="text" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="width" TYPE="text" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="height" TYPE="text" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="border" TYPE="text" NOTNULL="true" SEQUENCE="false"/>

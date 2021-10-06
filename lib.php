@@ -214,20 +214,36 @@ function leeloolxpvimeo_delete_instance($id) {
 function leeloolxpvimeo_get_coursemodule_info($coursemodule) {
     global $CFG, $DB;
     require_once("$CFG->libdir/resourcelib.php");
+    require_once($CFG->libdir . '/filelib.php');
 
     if (!$leeloolxpvimeo = $DB->get_record('leeloolxpvimeo', array('id' => $coursemodule->instance),
-        'id, name, display, displayoptions, intro, introformat, vimeo_video_id')) {
+        'id, name, display, displayoptions, intro, introformat, vimeo_video_id, vimeo_token')) {
         return null;
     }
 
     $info = new cached_cm_info();
     $info->name = $leeloolxpvimeo->name;
 
-    $data = file_get_contents("http://vimeo.com/api/v2/video/" . $leeloolxpvimeo->vimeo_video_id . ".json");
-    $data = json_decode($data);
+    //$leeloolxplicense = get_config('mod_leeloolxpvimeo')->license;
+    $url = 'https://api.vimeo.com/videos/'.$leeloolxpvimeo->vimeo_video_id;
 
-    $info->iconurl = $data[0]->thumbnail_small;
+    $postdata = array();
 
+    $curl = new curl;
+
+    $headers = array();
+    $headers[] = 'Authorization: bearer '.$leeloolxpvimeo->vimeo_token;
+
+    $curloptions = array(
+        'CURLOPT_HTTPHEADER' => $headers,
+        'CURLOPT_RETURNTRANSFER' => true,
+        'CURLOPT_CUSTOMREQUEST' => 'GET',
+    );
+
+    $output = $curl->post($url, $postdata, $curloptions);
+    $arroutput = json_decode($output);
+    $info->iconurl = $arroutput->pictures->base_link;
+    
     if ($coursemodule->showdescription) {
         // Convert intro to html. Do not filter cached version, filters run at display time.
 

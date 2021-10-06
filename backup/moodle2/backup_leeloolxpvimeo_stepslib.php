@@ -44,7 +44,7 @@ class backup_leeloolxpvimeo_activity_structure_step extends backup_activity_stru
 
         // Define each element separated
         $leeloolxpvimeo = new backup_nested_element('leeloolxpvimeo', array('id'), array(
-            'name', 'vimeo_video_id', 'width', 'height', 'border', 'allow', 'intro', 'introformat', 'content', 'contentformat',
+            'name', 'vimeo_video_id', 'vimeo_token', 'width', 'height', 'border', 'allow', 'intro', 'introformat', 'content', 'contentformat',
             'legacyfiles', 'legacyfileslast', 'display', 'displayoptions',
             'revision', 'timemodified'));
 

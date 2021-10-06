@@ -52,6 +52,7 @@ class moodle1_mod_leeloolxpvimeo_handler extends moodle1_resource_successor_hand
         $leeloolxpvimeo['id'] = $data['id'];
         $leeloolxpvimeo['name'] = $data['name'];
         $leeloolxpvimeo['vimeo_video_id'] = $data['vimeo_video_id'];
+        $leeloolxpvimeo['vimeo_token'] = $data['vimeo_token'];
         $leeloolxpvimeo['width'] = $data['width'];
         $leeloolxpvimeo['height'] = $data['height'];
         $leeloolxpvimeo['border'] = $data['border'];

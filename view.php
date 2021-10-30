@@ -159,46 +159,67 @@ $content = format_text($content, $leeloolxpvimeo->contentformat, $formatoptions)
 echo $OUTPUT->box($content, "generalbox center clearfix");
 global $USER;
 if ($show == 1) {
-    echo '<script src="https://player.vimeo.com/api/player.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
-    <script>
-        var iframe = document.querySelector("#vimeoiframe");
-        var player = new Vimeo.Player(iframe);
+    $PAGE->requires->js_init_code('require(["jquery"], function ($) {
+        $(document).ready(function () {
+            var iframe = document.querySelector("#vimeoiframe");
+            var player = new Vimeo.Player(iframe);
 
-        player.on("timeupdate", function(data){
-            var running_time = data.seconds;
-            Cookies.set("vimeotimeElapsed' . $cm->id . '", data.seconds);
-        });
-
-        var timeElapsed = Cookies.get("vimeotimeElapsed' . $cm->id . '");
-        if(timeElapsed){
-            player.setCurrentTime(timeElapsed);
-        }
-
-        player.on("ended", function() {
-            console.log("ended the video!");
-
-            $.post(
-                "' . $CFG->wwwroot . '/mod/leeloolxpvimeo/markcomplete.php",
-                {
-                    id:"' . $cm->id . '",
-                    completionstate:"1",
-                    fromajax:"1",
-                    sesskey:"' . $USER->sesskey . '"
-                }, function(response){
-                console.log("marked complete");
+            $("#autoplay_vimeo").change(function() {
+                if(this.checked) {
+                    Cookies.set("autoplay", 1);
+                }else{
+                    Cookies.set("autoplay", 0);
+                }
             });
 
-        });
+            player.on("timeupdate", function(data){
+                var running_time = data.seconds;
+                Cookies.set("vimeotimeElapsed' . $cm->id . '", data.seconds);
+            });
 
-        player.on("play", function() {
-            console.log("played the video!");
-        });
+            var timeElapsed = Cookies.get("vimeotimeElapsed' . $cm->id . '");
+            if(timeElapsed){
+                player.setCurrentTime(timeElapsed);
+            }
 
-        player.getVideoTitle().then(function(title) {
-            //console.log("title:", title);
+            player.on("ended", function() {
+                console.log("ended the video!");
+
+                $.post(
+                    "' . $CFG->wwwroot . '/mod/leeloolxpvimeo/markcomplete.php",
+                    {
+                        id:"' . $cm->id . '",
+                        completionstate:"1",
+                        fromajax:"1",
+                        sesskey:"' . $USER->sesskey . '"
+                    }, function(response){
+                        var autoplay = Cookies.get("autoplay");
+                        if( autoplay == 1 ){
+                            //console.log("autoplay");
+                            var nextvideo = $("#nextvideo").val();
+                            if( nextvideo != "" ){
+                                window.location.href = nextvideo;
+                            }
+                        }else{
+                            //console.log("notautoplay");
+                        }
+                        //console.log("marked complete");
+                });
+
+            });
+
+            player.on("play", function() {
+                console.log("played the video!");
+            });
+
+            player.getVideoTitle().then(function(title) {
+                //console.log("title:", title);
+            });
         });
-    </script>';
+    });');
+    echo '<script src="https://player.vimeo.com/api/player.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>';
+
 }
 
 echo $OUTPUT->footer();

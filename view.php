@@ -156,6 +156,8 @@ $formatoptions->noclean = true;
 $formatoptions->overflowdiv = true;
 $formatoptions->context = $context;
 $content = format_text($content, $leeloolxpvimeo->contentformat, $formatoptions);
+echo '<h3>'.$leeloolxpvimeo->name.'</h3>';
+echo '<p class="publisheddate">'.get_string('publishedon', 'mod_leeloolxpvimeo').date('M-d-Y',$leeloolxpvimeo->timemodified).'</p></h3>';
 echo $OUTPUT->box($content, "generalbox center clearfix");
 global $USER;
 if ($show == 1) {

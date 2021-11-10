@@ -74,4 +74,6 @@ $string['nolicense'] = 'Invalid Leeloo LXP License ID';
 $string['updatesetting'] = 'Update Settings On Leeloo LXP';
 $string['license'] = 'Leeloo LXP License ID';
 
+$string['publishedon'] = 'Published On ';
+
 $string['privacy:metadata'] = 'The Leeloo LXP Vimeo plugin only shows information and does not store user data.';

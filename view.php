@@ -141,13 +141,29 @@ if (!$output = $curl->post($url, $postdata, $options)) {
 }
 
 if ($leeloolxpvimeo->vimeo_video_id && $show == 1) {
-    echo '<iframe
+    echo '<div class="videoWrapper"><iframe
     id="vimeoiframe"
     src="https://player.vimeo.com/video/' . $leeloolxpvimeo->vimeo_video_id . '"
     width="' . $leeloolxpvimeo->width . '"
     height="' . $leeloolxpvimeo->height . '"
     frameborder="' . $leeloolxpvimeo->border . '"
-    allow="' . $leeloolxpvimeo->allow . '" allowfullscreen=""></iframe>';
+    allow="' . $leeloolxpvimeo->allow . '" allowfullscreen=""></iframe></div>
+    <style>
+    .videoWrapper {
+        position: relative;
+        padding-bottom: 56.25%; /* 16:9 */
+        height: 0;
+        margin-bottom: 20px;
+      }
+      .videoWrapper iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+    ';
 }
 
 $content = file_rewrite_pluginfile_urls($leeloolxpvimeo->content, 'pluginfile.php', $context->id, 'mod_leeloolxpvimeo', 'content', $leeloolxpvimeo->revision);

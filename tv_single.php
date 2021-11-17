@@ -315,7 +315,7 @@ if ($show == 1) {
     if( isset($leeloolxprelatedvimeos[$thiskey+1]) ){
         $nextvideo = $leeloolxprelatedvimeos[$thiskey+1]->url;
     }else{
-        $nextvideo = $leeloolxprelatedvimeos[$thiskey]->url;
+        $nextvideo = $leeloolxprelatedvimeos[0]->url;
     }
 
     echo '

@@ -64,3 +64,34 @@ function leeloolxpvimeo_get_editor_options($context) {
     global $CFG;
     return array('subdirs' => 1, 'maxbytes' => $CFG->maxbytes, 'maxfiles' => -1, 'changeformat' => 1, 'context' => $context, 'noclean' => 1, 'trusttext' => 0);
 }
+
+/**
+ * Get the image for a course if it exists
+ *
+ * @param object $course The course whose image we want
+ * @return string|void
+ */
+function leeloolxpvimeo_course_image($course) {
+    global $CFG;
+
+    $course = new core_course_list_element($course);
+    // Check to see if a file has been set on the course level.
+    if ($course->id > 0 && $course->get_course_overviewfiles()) {
+        foreach ($course->get_course_overviewfiles() as $file) {
+            $isimage = $file->is_valid_image();
+            $url = file_encode_url("$CFG->wwwroot/pluginfile.php",
+                '/' . $file->get_contextid() . '/' . $file->get_component() . '/' .
+                $file->get_filearea() . $file->get_filepath() . $file->get_filename(), !$isimage);
+            if ($isimage) {
+                return $url;
+            } else {
+                return '';
+            }
+        }
+    } else {
+        // Lets try to find some default images eh?.
+        return '';
+    }
+    // Where are the default at even?.
+    return print_error('error');
+}

@@ -227,10 +227,6 @@
     flex-wrap: wrap;
     margin: 0 0 10px;
 }
-.related_video_items .related_video_item:nth-child(1) {
-    padding-bottom: 10px;
-    border-bottom: 1px solid #ccc;
-}
 .related_video_head {
     font-size: 15px;
     margin: 0 0 10px;

@@ -85,12 +85,12 @@ function leeloolxpvimeo_course_image($course) {
             if ($isimage) {
                 return $url;
             } else {
-                return '';
+                return 'https://leeloolxp.com/modules/mod_acadmic/images/Leeloo-lxp1.png';
             }
         }
     } else {
         // Lets try to find some default images eh?.
-        return '';
+        return 'https://leeloolxp.com/modules/mod_acadmic/images/Leeloo-lxp1.png';
     }
     // Where are the default at even?.
     return print_error('error');

@@ -258,10 +258,16 @@
     color: black;
     text-decoration: none;
 }
-.vimeoenrollicon i.fa.fa-times-circle {
+.notenrolled .vimeoenrollicon i {
     cursor: pointer;
+    color: dodgerblue;
 }
-
+#page-mod-leeloolxpvimeo-tv_single .main-right-section {
+    display: none;
+}
+#page-mod-leeloolxpvimeo-tv_single section#region-main {
+    width: 100%;
+}
 @media only screen and (max-width: 1500px) {
     .search_vimeotv_left ul li {
         display: inline-block;

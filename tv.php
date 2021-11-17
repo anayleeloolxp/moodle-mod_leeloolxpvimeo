@@ -151,7 +151,7 @@ foreach( $loopvideos as $key=>$leeloolxpvimeo ){
     }else{
         $link = "javascript:void(0);";
         $link = $CFG->wwwroot . '/mod/leeloolxpvimeo/tv_single.php?id='.$leeloolxpmod->id;
-        $enrollicon = '<i class="fa fa-times-circle"></i>';
+        $enrollicon = '<i class="fa fa-plus-circle"></i>';
     }
 
     $listhtml .= "<div class='vimeovideosin ".$leeloolxpvimeo->enrolled."'><a href='".$link."'><div class='vimeovideoimg'><img src='".$arroutput->pictures->base_link."'/></div><div class='vimeovideotitle'>".$leeloolxpvimeo->name."</div><div class='vimeovideocourse'><span class='vimeocoursename'>".$leeloolxpvimeo->coursename."</span><span class='vimeoenrollicon'>".$enrollicon."</span></div></a></div>";
@@ -243,7 +243,7 @@ $PAGE->requires->js_init_code('require(["jquery"], function ($) {
                             }else{
                                 var link = "javascript:void(0);";
                                 var link = "' . $CFG->wwwroot . '/mod/leeloolxpvimeo/tv_single.php?id="+val.modid;
-                                var enrollicon = \'<i class="fa fa-times-circle"></i>\';
+                                var enrollicon = \'<i class="fa fa-plus-circle"></i>\';
                             }
                             
                             $(".vimeovideoslist").append("<div class=\'vimeovideosin "+val.enrolled+" \'><a href=\'"+link+"\'><div class=\'vimeovideoimg\'><img src=\'"+val.image+"\'/></div><div class=\'vimeovideotitle\'>"+val.name+"</div><div class=\'vimeovideocourse\'><span class=\'vimeocoursename\'>"+val.coursename+"</span><span class=\'vimeoenrollicon\'>"+enrollicon+"</span></div></a></div>");

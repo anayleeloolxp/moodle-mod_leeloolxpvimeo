@@ -82,7 +82,17 @@ if ($inpopup and $leeloolxpvimeo->display == RESOURCELIB_DISPLAY_POPUP) {
 }
 echo $OUTPUT->header();
 
-$leeloolxprelatedvimeos = $DB->get_records_sql('SELECT v.*, c.fullname as coursename FROM {leeloolxpvimeo} as v left join {course} as c on c.id = v.course'.' where v.course = ?', [$course->id], 0, 10);
+$videotitlearr = explode(' ', $leeloolxpvimeo->name);
+
+$namesql = '';
+foreach( $videotitlearr as $videtitlesin){
+    $videtitlesinsql = str_ireplace( '?', '', $videtitlesin );
+    $namesql .= ' OR v.name LIKE "%'.$videtitlesinsql.'%"';
+}
+
+$leeloolxprelatedvimeosall = $DB->get_records_sql('SELECT v.*, c.fullname as coursename FROM {leeloolxpvimeo} as v left join {course} as c on c.id = v.course'.' where v.course = ?'.$namesql, [$course->id], 0, 10);
+
+$leeloolxprelatedvimeos = array_values($leeloolxprelatedvimeosall);
 
 if (!empty($options['printintro'])) {
     if (trim(strip_tags($leeloolxpvimeo->intro))) {
@@ -257,7 +267,8 @@ if ($show == 1) {
     $nextvideo = '';
 
     $count = 1;
-    foreach( $leeloolxprelatedvimeos as $relatedvideo ){
+    $thiskey = 0;
+    foreach( $leeloolxprelatedvimeos as $key=>$relatedvideo ){
 
         $leeloolxpmod = $DB->get_record_sql('SELECT cm.id FROM {course_modules} as cm left join {modules} as m on m.id = cm.module left join {leeloolxpvimeo} as vinner on vinner.id = cm.instance where m.name = "leeloolxpvimeo" and vinner.id = ?', array($relatedvideo->id) );
 
@@ -265,8 +276,10 @@ if ($show == 1) {
 
         $url = 'https://api.vimeo.com/videos/'.$relatedvideo->vimeo_video_id;
 
-        if( $count == 1 ){
-            $nextvideo = $relatedvideourl;
+        $leeloolxprelatedvimeos[$key]->url = $relatedvideourl;
+
+        if( $leeloolxpmod->id == $id ){
+            $thiskey = $key;
         }
         
         $postdata = array();
@@ -297,6 +310,12 @@ if ($show == 1) {
         </div>';
 
         $count++;
+    }
+
+    if( isset($leeloolxprelatedvimeos[$thiskey+1]) ){
+        $nextvideo = $leeloolxprelatedvimeos[$thiskey+1]->url;
+    }else{
+        $nextvideo = $leeloolxprelatedvimeos[$thiskey]->url;
     }
 
     echo '

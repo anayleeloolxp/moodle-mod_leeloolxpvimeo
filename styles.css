@@ -1,6 +1,9 @@
 #page-mod-leeloolxpvimeo-tv_single .bottom_activity_navigation {
     display: none;
 }
+.vimeovideoimg img {
+    max-width: 100%;
+}
 .vimeovideoslist {
     overflow: hidden;
 }

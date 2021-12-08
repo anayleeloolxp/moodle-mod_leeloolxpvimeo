@@ -183,6 +183,9 @@
     font-size: 17px;
     cursor: pointer;
 }
+.vimeotv_close a, .vimeotv_close a:hover, .vimeotv_close a:focus {
+    color: #fff;
+}
 .vimeotv-iim {
     display: flex;
     flex-wrap: wrap;
@@ -211,6 +214,9 @@
 }
 .related_video_item .related_video_img {
     width: 40%;
+}
+.related_video_img img {
+    width: 100%;
 }
 .related_video_item .related_video_txt {
     width: 60%;

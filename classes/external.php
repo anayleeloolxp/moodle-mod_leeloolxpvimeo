@@ -105,4 +105,119 @@ class mod_leeloolxpvimeo_external extends external_api {
         );
     }
 
+    /**
+     * Describes the parameters for get_leeloolxpvimeos_by_courses.
+     *
+     * @return external_function_parameters
+     * @since Moodle 3.3
+     */
+    public static function get_leeloolxpvimeos_by_courses_parameters() {
+        return new external_function_parameters (
+            array(
+                'courseids' => new external_multiple_structure(
+                    new external_value(PARAM_INT, 'Course id'), 'Array of course ids', VALUE_DEFAULT, array()
+                ),
+            )
+        );
+    }
+
+    /**
+     * Returns a list of leeloolxpvimeos in a provided list of courses.
+     * If no list is provided all leeloolxpvimeos that the user can view will be returned.
+     *
+     * @param array $courseids course ids
+     * @return array of warnings and leeloolxpvimeos
+     * @since Moodle 3.3
+     */
+    public static function get_leeloolxpvimeos_by_courses($courseids = array()) {
+
+        $warnings = array();
+        $returnedleeloolxpvimeos = array();
+
+        $params = array(
+            'courseids' => $courseids,
+        );
+        $params = self::validate_parameters(self::get_leeloolxpvimeos_by_courses_parameters(), $params);
+
+        $mycourses = array();
+        if (empty($params['courseids'])) {
+            $mycourses = enrol_get_my_courses();
+            $params['courseids'] = array_keys($mycourses);
+        }
+
+        // Ensure there are courseids to loop through.
+        if (!empty($params['courseids'])) {
+
+            list($courses, $warnings) = external_util::validate_courses($params['courseids'], $mycourses);
+
+            // Get the leeloolxpvimeos in this course, this function checks users visibility permissions.
+            // We can avoid then additional validate_context calls.
+            $leeloolxpvimeos = get_all_instances_in_courses("leeloolxpvimeo", $courses);
+            foreach ($leeloolxpvimeos as $leeloolxpvimeo) {
+                $context = context_module::instance($leeloolxpvimeo->coursemodule);
+                // Entry to return.
+                $leeloolxpvimeo->name = external_format_string($leeloolxpvimeo->name, $context->id);
+
+                $options = array('noclean' => true);
+                list($leeloolxpvimeo->intro, $leeloolxpvimeo->introformat) =
+                    external_format_text($leeloolxpvimeo->intro, $leeloolxpvimeo->introformat, $context->id, 'mod_leeloolxpvimeo', 'intro', null, $options);
+                $leeloolxpvimeo->introfiles = external_util::get_area_files($context->id, 'mod_leeloolxpvimeo', 'intro', false, false);
+
+                $options = array('noclean' => true);
+                list($leeloolxpvimeo->content, $leeloolxpvimeo->contentformat) = external_format_text($leeloolxpvimeo->content, $leeloolxpvimeo->contentformat,
+                                                                $context->id, 'mod_leeloolxpvimeo', 'content', $leeloolxpvimeo->revision, $options);
+                $leeloolxpvimeo->contentfiles = external_util::get_area_files($context->id, 'mod_leeloolxpvimeo', 'content');
+
+                $returnedleeloolxpvimeos[] = $leeloolxpvimeo;
+            }
+        }
+
+        $result = array(
+            'leeloolxpvimeos' => $returnedleeloolxpvimeos,
+            'warnings' => $warnings
+        );
+        return $result;
+    }
+
+    /**
+     * Describes the get_leeloolxpvimeos_by_courses return value.
+     *
+     * @return external_single_structure
+     * @since Moodle 3.3
+     */
+    public static function get_leeloolxpvimeos_by_courses_returns() {
+        return new external_single_structure(
+            array(
+                'leeloolxpvimeos' => new external_multiple_structure(
+                    new external_single_structure(
+                        array(
+                            'id' => new external_value(PARAM_INT, 'Module id'),
+                            'coursemodule' => new external_value(PARAM_INT, 'Course module id'),
+                            'course' => new external_value(PARAM_INT, 'Course id'),
+                            'name' => new external_value(PARAM_RAW, 'leeloolxpvimeo name'),
+                            'vimeo_video_id' => new external_value(PARAM_RAW, 'leeloolxpvimeo vimeo_video_id'),
+                            'intro' => new external_value(PARAM_RAW, 'Summary'),
+                            'introformat' => new external_format_value('intro', 'Summary format'),
+                            'introfiles' => new external_files('Files in the introduction text'),
+                            'content' => new external_value(PARAM_RAW, 'leeloolxpvimeo content'),
+                            'contentformat' => new external_format_value('content', 'Content format'),
+                            'contentfiles' => new external_files('Files in the content'),
+                            'legacyfiles' => new external_value(PARAM_INT, 'Legacy files flag'),
+                            'legacyfileslast' => new external_value(PARAM_INT, 'Legacy files last control flag'),
+                            'display' => new external_value(PARAM_INT, 'How to display the leeloolxpvimeo'),
+                            'displayoptions' => new external_value(PARAM_RAW, 'Display options (width, height)'),
+                            'revision' => new external_value(PARAM_INT, 'Incremented when after each file changes, to avoid cache'),
+                            'timemodified' => new external_value(PARAM_INT, 'Last time the leeloolxpvimeo was modified'),
+                            'section' => new external_value(PARAM_INT, 'Course section id'),
+                            'visible' => new external_value(PARAM_INT, 'Module visibility'),
+                            'groupmode' => new external_value(PARAM_INT, 'Group mode'),
+                            'groupingid' => new external_value(PARAM_INT, 'Grouping id'),
+                        )
+                    )
+                ),
+                'warnings' => new external_warnings(),
+            )
+        );
+    }
+
 }

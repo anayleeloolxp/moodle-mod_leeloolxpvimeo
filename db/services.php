@@ -37,4 +37,14 @@ $functions = array(
         'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
     ),
 
+    'mod_leeloolxpvimeo_get_leeloolxpvimeos_by_courses' => array(
+        'classname'     => 'mod_leeloolxpvimeo_external',
+        'methodname'    => 'get_leeloolxpvimeos_by_courses',
+        'description'   => 'Returns a list of leeloolxpvimeos in a provided list of courses, if no list is provided all leeloolxpvimeos that the user
+                            can view will be returned.',
+        'type'          => 'read',
+        'capabilities'  => 'mod/leeloolxpvimeo:view',
+        'services'      => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
+    ),
+
 );

@@ -168,6 +168,8 @@ class mod_leeloolxpvimeo_external extends external_api {
                                                                 $context->id, 'mod_leeloolxpvimeo', 'content', $leeloolxpvimeo->revision, $options);
                 $leeloolxpvimeo->contentfiles = external_util::get_area_files($context->id, 'mod_leeloolxpvimeo', 'content');
 
+                $leeloolxpvimeo->iframesrc = 'https://player.vimeo.com/video/' . $leeloolxpvimeo->vimeo_video_id;
+
                 $returnedleeloolxpvimeos[] = $leeloolxpvimeo;
             }
         }
@@ -195,7 +197,7 @@ class mod_leeloolxpvimeo_external extends external_api {
                             'coursemodule' => new external_value(PARAM_INT, 'Course module id'),
                             'course' => new external_value(PARAM_INT, 'Course id'),
                             'name' => new external_value(PARAM_RAW, 'leeloolxpvimeo name'),
-                            'vimeo_video_id' => new external_value(PARAM_RAW, 'leeloolxpvimeo vimeo_video_id'),
+                            'iframesrc' => new external_value(PARAM_RAW, 'leeloolxpvimeo iframesrc'),
                             'intro' => new external_value(PARAM_RAW, 'Summary'),
                             'introformat' => new external_format_value('intro', 'Summary format'),
                             'introfiles' => new external_files('Files in the introduction text'),

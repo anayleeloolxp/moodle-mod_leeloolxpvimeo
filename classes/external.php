@@ -131,6 +131,8 @@ class mod_leeloolxpvimeo_external extends external_api {
      */
     public static function get_leeloolxpvimeos_by_courses($courseids = array()) {
 
+        global $USER, $CFG;
+        $token = optional_param('wstoken', '', PARAM_ALPHANUM);
         $warnings = array();
         $returnedleeloolxpvimeos = array();
 
@@ -169,6 +171,8 @@ class mod_leeloolxpvimeo_external extends external_api {
                 $leeloolxpvimeo->contentfiles = external_util::get_area_files($context->id, 'mod_leeloolxpvimeo', 'content');
 
                 $leeloolxpvimeo->iframesrc = 'https://player.vimeo.com/video/' . $leeloolxpvimeo->vimeo_video_id;
+                
+                $leeloolxpvimeo->iframesrc = $CFG->wwwroot.'/mod/leeloolxpvimeo/view_app.php?id='.$leeloolxpvimeo->coursemodule.'&token='.$token.'&userid='.$USER->id;
 
                 $returnedleeloolxpvimeos[] = $leeloolxpvimeo;
             }

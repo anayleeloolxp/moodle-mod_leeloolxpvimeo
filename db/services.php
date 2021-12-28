@@ -47,4 +47,13 @@ $functions = array(
         'services'      => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
     ),
 
+    'mod_leeloolxpvimeo_markcomplete_leeloolxpvimeo' => array(
+        'classname' => 'mod_leeloolxpvimeo_external',
+        'methodname' => 'markcomplete_leeloolxpvimeo',
+        'description' => 'Simulate the completion of activity.',
+        'type' => 'write',
+        'capabilities' => 'mod/leeloolxpvimeo:view',
+        'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
+    ),
+
 );

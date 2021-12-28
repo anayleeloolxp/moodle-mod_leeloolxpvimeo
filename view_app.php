@@ -157,35 +157,19 @@ if ($show == 1) {
             console.log("ended the video!");
 
             $.post(
-                "' . $CFG->wwwroot . '/mod/leeloolxpvimeo/markcomplete.php",
+                "' . $CFG->wwwroot . '/webservice/rest/server.php?moodlewsrestformat=json&wsfunction=mod_leeloolxpvimeo_markcomplete_leeloolxpvimeo",
                 {
-                    id:"' . $cm->id . '",
+                    cmid:"' . $cm->id . '",
                     completionstate:"1",
-                    fromajax:"1",
-                    sesskey:"' . $sesskey . '"
+                    userid:"'.$userid.'",
+                    wsfunction:"mod_leeloolxpvimeo_markcomplete_leeloolxpvimeo",
+                    wstoken:"' . $token . '"
                 }, function(response){
-                    var autoplay = Cookies.get("autoplay");
-                    if( autoplay == 1 ){
-                        //console.log("autoplay");
-                        var nextvideo = $("#nextvideo").val();
-                        if( nextvideo != "" ){
-                            window.location.href = nextvideo;
-                        }
-                    }else{
-                        //console.log("notautoplay");
-                    }
-                    //console.log("marked complete");
+                    console.log("marked complete");
             });
 
         });
 
-        player.on("play", function() {
-            console.log("played the video!");
-        });
-
-        player.getVideoTitle().then(function(title) {
-            //console.log("title:", title);
-        });
     });
     </script>
     ';

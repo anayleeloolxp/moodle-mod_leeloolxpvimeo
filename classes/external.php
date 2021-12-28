@@ -226,4 +226,92 @@ class mod_leeloolxpvimeo_external extends external_api {
         );
     }
 
+    /**
+     * Returns description of method parameters
+     *
+     * @return external_function_parameters
+     * @since Moodle 3.0
+     */
+    public static function markcomplete_leeloolxpvimeo_parameters() {
+        return new external_function_parameters(
+            array(
+                'cmid' => new external_value(PARAM_INT, 'module instance id'),
+                'completionstate' => new external_value(PARAM_INT, 'completion state'),
+                'userid' => new external_value(PARAM_INT, 'userid'),
+            )
+        );
+    }
+
+    /**
+     * Simulate the leeloolxpvimeo/view.php web interface leeloolxpvimeo: trigger events, completion, etc...
+     *
+     * @param int $cmid the leeloolxpvimeo instance id
+     * @param int $completionstate the leeloolxpvimeo completionstate
+     * @param int $userid the leeloolxpvimeo userid
+     * @return array of warnings and status result
+     * @since Moodle 3.0
+     * @throws moodle_exception
+     */
+    public static function markcomplete_leeloolxpvimeo($cmid, $completionstate, $userid) {
+        global $DB, $CFG;
+        require_once($CFG->dirroot . "/mod/leeloolxpvimeo/lib.php");
+        require_once($CFG->libdir . '/completionlib.php');
+
+        $params = self::validate_parameters(self::markcomplete_leeloolxpvimeo_parameters(),
+            array(
+                'cmid' => $cmid,
+                'completionstate' => $completionstate,
+                'userid' => $userid,
+            ));
+        $warnings = array();
+
+        $targetstate = COMPLETION_COMPLETE;
+        $thisuserid = $params['userid'];
+        $fromajax = 1;
+
+        /* switch ($targetstate) {
+            case COMPLETION_COMPLETE:
+            case COMPLETION_INCOMPLETE:
+                break;
+            default:
+                print_error('unsupportedstate');
+        } */
+
+        $cm = get_coursemodule_from_id(null, $params['cmid'], null, true, MUST_EXIST);
+        $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
+
+        $completion = new completion_info($course);
+        $completion->set_module_viewed($cm);
+
+        if (!$completion->is_enabled()) {
+            throw new moodle_exception('completionnotenabled', 'completion');
+        }
+
+        if ($cm->completion != COMPLETION_TRACKING_MANUAL) {
+            error_or_ajax('cannotmanualctrack', $fromajax);
+        }
+
+        $completion->update_state($cm, $targetstate, $thisuserid);
+
+        $result = array();
+        $result['status'] = true;
+        $result['warnings'] = $warnings;
+        return $result;
+    }
+
+    /**
+     * Returns description of method result value
+     *
+     * @return external_description
+     * @since Moodle 3.0
+     */
+    public static function markcomplete_leeloolxpvimeo_returns() {
+        return new external_single_structure(
+            array(
+                'status' => new external_value(PARAM_BOOL, 'status: true if success'),
+                'warnings' => new external_warnings(),
+            )
+        );
+    }
+
 }

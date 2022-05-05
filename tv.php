@@ -53,19 +53,19 @@ if( $p ){
 
 if ($searchstring) {
 
-    $leeloolxpvimeos = $DB->get_records_sql('SELECT v.*, c.fullname as coursename FROM {leeloolxpvimeo} as v left join {course} as c on c.id = v.course WHERE v.vimeo_video_id != "" AND '.$DB->sql_like('v.name', ':name', false, false).' '.$sortbysql, ['name' => '%'.$DB->sql_like_escape($searchstring).'%'], $from, $perpage);
+    $leeloolxpvimeos = $DB->get_records_sql('SELECT v.*, c.fullname coursename FROM {leeloolxpvimeo} v left join {course} c on c.id = v.course WHERE v.vimeo_video_id != "" AND '.$DB->sql_like('v.name', ':name', false, false).' '.$sortbysql, ['name' => '%'.$DB->sql_like_escape($searchstring).'%'], $from, $perpage);
 
-    $leeloolxpvimeoscount = $DB->get_record_sql('SELECT count(*) as total FROM {leeloolxpvimeo} as v left join {course} as c on c.id = v.course WHERE v.vimeo_video_id != "" AND '.$DB->sql_like('v.name', ':name', false, false).' '.$sortbysql, ['name' => '%'.$DB->sql_like_escape($searchstring).'%']);
+    $leeloolxpvimeoscount = $DB->get_record_sql('SELECT count(*) total FROM {leeloolxpvimeo} v left join {course} c on c.id = v.course WHERE v.vimeo_video_id != "" AND '.$DB->sql_like('v.name', ':name', false, false).' '.$sortbysql, ['name' => '%'.$DB->sql_like_escape($searchstring).'%']);
 
 }else{
 
-    $leeloolxpvimeos = $DB->get_records_sql('SELECT v.*, c.fullname as coursename FROM {leeloolxpvimeo} as v left join {course} as c on c.id = v.course'.' where v.vimeo_video_id != "" '.$sortbysql, [], $from, $perpage);
+    $leeloolxpvimeos = $DB->get_records_sql('SELECT v.*, c.fullname coursename FROM {leeloolxpvimeo} v left join {course} c on c.id = v.course'.' where v.vimeo_video_id != "" '.$sortbysql, [], $from, $perpage);
 
-    $leeloolxpvimeoscount = $DB->get_record_sql('SELECT count(*) as total FROM {leeloolxpvimeo} as v left join {course} as c on c.id = v.course'.' where v.vimeo_video_id != "" '.$sortbysql);
+    $leeloolxpvimeoscount = $DB->get_record_sql('SELECT count(*) total FROM {leeloolxpvimeo} v left join {course} c on c.id = v.course'.' where v.vimeo_video_id != "" '.$sortbysql);
 
 }
 
-$leeloolxpextras = $DB->get_records_sql('SELECT v.*, c.fullname as coursename FROM {leeloolxpvimeo} as v left join {course} as c on c.id = v.course where v.vimeo_video_id != "" '.$sortbysql.' limit 12');
+$leeloolxpextras = $DB->get_records_sql('SELECT v.*, c.fullname coursename FROM {leeloolxpvimeo} v left join {course} c on c.id = v.course where v.vimeo_video_id != "" '.$sortbysql.' limit 12');
 
 if( $searchstring && $leeloolxpvimeoscount->total == 0 ){
     foreach( $leeloolxpextras as $key=>$leeloolxpextra ){
@@ -96,7 +96,7 @@ if( $searchstring && $leeloolxpvimeoscount->total == 0 ){
         $arroutput = json_decode($output);
         $leeloolxpextras[$key]->image = $arroutput->pictures->base_link;
 
-        $leeloolxpmod = $DB->get_record_sql('SELECT cm.id FROM {course_modules} as cm left join {modules} as m on m.id = cm.module left join {leeloolxpvimeo} as vinner on vinner.id = cm.instance where m.name = "leeloolxpvimeo" and vinner.id = ?', array($leeloolxpextra->id) );
+        $leeloolxpmod = $DB->get_record_sql('SELECT cm.id FROM {course_modules} cm left join {modules} m on m.id = cm.module left join {leeloolxpvimeo} vinner on vinner.id = cm.instance where m.name = "leeloolxpvimeo" and vinner.id = ?', array($leeloolxpextra->id) );
 
         $leeloolxpextras[$key]->modid = $leeloolxpmod->id;
     }
@@ -141,7 +141,7 @@ foreach( $loopvideos as $key=>$leeloolxpvimeo ){
     $arroutput = json_decode($output);
     $loopvideos[$key]->image = $arroutput->pictures->base_link;
 
-    $leeloolxpmod = $DB->get_record_sql('SELECT cm.id FROM {course_modules} as cm left join {modules} as m on m.id = cm.module left join {leeloolxpvimeo} as vinner on vinner.id = cm.instance where m.name = "leeloolxpvimeo" and vinner.id = ?', array($leeloolxpvimeo->id) );
+    $leeloolxpmod = $DB->get_record_sql('SELECT cm.id FROM {course_modules} cm left join {modules} m on m.id = cm.module left join {leeloolxpvimeo} vinner on vinner.id = cm.instance where m.name = "leeloolxpvimeo" and vinner.id = ?', array($leeloolxpvimeo->id) );
 
     $loopvideos[$key]->modid = $leeloolxpmod->id;
 

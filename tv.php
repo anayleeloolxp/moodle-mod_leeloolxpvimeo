@@ -55,13 +55,13 @@ if ($searchstring) {
 
     $leeloolxpvimeos = $DB->get_records_sql("SELECT v.*, c.fullname coursename FROM {leeloolxpvimeo} v left join {course} c on c.id = v.course WHERE v.vimeo_video_id != '' AND ".$DB->sql_like('v.name', ':name', false, false)." ".$sortbysql, ['name' => '%'.$DB->sql_like_escape($searchstring).'%'], $from, $perpage);
 
-    $leeloolxpvimeoscount = $DB->get_record_sql("SELECT count(*) total FROM {leeloolxpvimeo} v left join {course} c on c.id = v.course WHERE v.vimeo_video_id != '' AND ".$DB->sql_like('v.name', ':name', false, false)." ".$sortbysql, ['name' => '%'.$DB->sql_like_escape($searchstring).'%']);
+    $leeloolxpvimeoscount = $DB->get_record_sql("SELECT count(*) total FROM {leeloolxpvimeo} v left join {course} c on c.id = v.course WHERE v.vimeo_video_id != '' AND ".$DB->sql_like('v.name', ':name', false, false)." ", ['name' => '%'.$DB->sql_like_escape($searchstring).'%']);
 
 }else{
 
     $leeloolxpvimeos = $DB->get_records_sql("SELECT v.*, c.fullname coursename FROM {leeloolxpvimeo} v left join {course} c on c.id = v.course"." where v.vimeo_video_id != '' ".$sortbysql, [], $from, $perpage);
 
-    $leeloolxpvimeoscount = $DB->get_record_sql("SELECT count(*) total FROM {leeloolxpvimeo} v left join {course} c on c.id = v.course"." where v.vimeo_video_id != '' ".$sortbysql);
+    $leeloolxpvimeoscount = $DB->get_record_sql("SELECT count(*) total FROM {leeloolxpvimeo} v left join {course} c on c.id = v.course"." where v.vimeo_video_id != '' ");
 
 }
 

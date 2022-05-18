@@ -23,6 +23,7 @@
  */
 
 namespace mod_leeloolxpvimeo\event;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**

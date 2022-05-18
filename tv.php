@@ -36,55 +36,53 @@ $limit = optional_param('limit', 12, PARAM_INT); // Page instance ID
 $sortby = optional_param('sortby', 'latest', PARAM_RAW); // Page instance ID
 
 $sortbysql = 'ORDER BY v.name ASC';
-if( $sortby == 'nameasc' ){
+if ($sortby == 'nameasc') {
     $sortbysql = 'ORDER BY v.name ASC';
-}elseif( $sortby == 'namedesc' ){
+} elseif ($sortby == 'namedesc') {
     $sortbysql = 'ORDER BY v.name DESC';
-}elseif( $sortby == 'latest' ){
+} elseif ($sortby == 'latest') {
     $sortbysql = 'ORDER BY v.id DESC';
 }
 
 $perpage = $limit;
 $from = 0;
 
-if( $p ){
+if ($p) {
     $from = $perpage * ($p - 1);
 }
 
 if ($searchstring) {
 
-    $leeloolxpvimeos = $DB->get_records_sql("SELECT v.*, c.fullname coursename FROM {leeloolxpvimeo} v left join {course} c on c.id = v.course WHERE v.vimeo_video_id != '' AND ".$DB->sql_like('v.name', ':name', false, false)." ".$sortbysql, ['name' => '%'.$DB->sql_like_escape($searchstring).'%'], $from, $perpage);
+    $leeloolxpvimeos = $DB->get_records_sql("SELECT v.*, c.fullname coursename FROM {leeloolxpvimeo} v left join {course} c on c.id = v.course WHERE v.vimeo_video_id != '' AND " . $DB->sql_like('v.name', ':name', false, false) . " " . $sortbysql, ['name' => '%' . $DB->sql_like_escape($searchstring) . '%'], $from, $perpage);
 
-    $leeloolxpvimeoscount = $DB->get_record_sql("SELECT count(*) total FROM {leeloolxpvimeo} v left join {course} c on c.id = v.course WHERE v.vimeo_video_id != '' AND ".$DB->sql_like('v.name', ':name', false, false)." ", ['name' => '%'.$DB->sql_like_escape($searchstring).'%']);
+    $leeloolxpvimeoscount = $DB->get_record_sql("SELECT count(*) total FROM {leeloolxpvimeo} v left join {course} c on c.id = v.course WHERE v.vimeo_video_id != '' AND " . $DB->sql_like('v.name', ':name', false, false) . " ", ['name' => '%' . $DB->sql_like_escape($searchstring) . '%']);
+} else {
 
-}else{
+    $leeloolxpvimeos = $DB->get_records_sql("SELECT v.*, c.fullname coursename FROM {leeloolxpvimeo} v left join {course} c on c.id = v.course" . " where v.vimeo_video_id != '' " . $sortbysql, [], $from, $perpage);
 
-    $leeloolxpvimeos = $DB->get_records_sql("SELECT v.*, c.fullname coursename FROM {leeloolxpvimeo} v left join {course} c on c.id = v.course"." where v.vimeo_video_id != '' ".$sortbysql, [], $from, $perpage);
-
-    $leeloolxpvimeoscount = $DB->get_record_sql("SELECT count(*) total FROM {leeloolxpvimeo} v left join {course} c on c.id = v.course"." where v.vimeo_video_id != '' ");
-
+    $leeloolxpvimeoscount = $DB->get_record_sql("SELECT count(*) total FROM {leeloolxpvimeo} v left join {course} c on c.id = v.course" . " where v.vimeo_video_id != '' ");
 }
 
-$leeloolxpextras = $DB->get_records_sql("SELECT v.*, c.fullname coursename FROM {leeloolxpvimeo} v left join {course} c on c.id = v.course where v.vimeo_video_id != '' ".$sortbysql." limit 12");
+$leeloolxpextras = $DB->get_records_sql("SELECT v.*, c.fullname coursename FROM {leeloolxpvimeo} v left join {course} c on c.id = v.course where v.vimeo_video_id != '' " . $sortbysql . " limit 12");
 
-if( $searchstring && $leeloolxpvimeoscount->total == 0 ){
-    foreach( $leeloolxpextras as $key=>$leeloolxpextra ){
+if ($searchstring && $leeloolxpvimeoscount->total == 0) {
+    foreach ($leeloolxpextras as $key => $leeloolxpextra) {
 
         $coursecontext = context_course::instance($leeloolxpextra->course);
-        if(is_enrolled($coursecontext, $USER->id)){
+        if (is_enrolled($coursecontext, $USER->id)) {
             $leeloolxpextras[$key]->enrolled = 'enrolled';
-        }else{
+        } else {
             $leeloolxpextras[$key]->enrolled = 'notenrolled';
         }
 
-        $url = 'https://api.vimeo.com/videos/'.$leeloolxpextra->vimeo_video_id;
+        $url = 'https://api.vimeo.com/videos/' . $leeloolxpextra->vimeo_video_id;
 
         $postdata = array();
 
         $curl = new curl;
 
         $headers = array();
-        $headers[] = 'Authorization: bearer '.$leeloolxpextra->vimeo_token;
+        $headers[] = 'Authorization: bearer ' . $leeloolxpextra->vimeo_token;
 
         $curloptions = array(
             'CURLOPT_HTTPHEADER' => $headers,
@@ -96,7 +94,7 @@ if( $searchstring && $leeloolxpvimeoscount->total == 0 ){
         $arroutput = json_decode($output);
         $leeloolxpextras[$key]->image = $arroutput->pictures->base_link;
 
-        $leeloolxpmod = $DB->get_record_sql('SELECT cm.id FROM {course_modules} cm left join {modules} m on m.id = cm.module left join {leeloolxpvimeo} vinner on vinner.id = cm.instance where m.name = "leeloolxpvimeo" and vinner.id = ?', array($leeloolxpextra->id) );
+        $leeloolxpmod = $DB->get_record_sql('SELECT cm.id FROM {course_modules} cm left join {modules} m on m.id = cm.module left join {leeloolxpvimeo} vinner on vinner.id = cm.instance where m.name = "leeloolxpvimeo" and vinner.id = ?', array($leeloolxpextra->id));
 
         $leeloolxpextras[$key]->modid = $leeloolxpmod->id;
     }
@@ -104,32 +102,32 @@ if( $searchstring && $leeloolxpvimeoscount->total == 0 ){
 
 $nosearchresultscss = 'style="display:none;"';
 
-if( $leeloolxpvimeoscount->total == 0 ){
+if ($leeloolxpvimeoscount->total == 0) {
     $loopvideos = $leeloolxpextras;
     $nosearchresultscss = '';
-}else{
+} else {
     $loopvideos = $leeloolxpvimeos;
 }
 
 $listhtml = '';
 
-foreach( $loopvideos as $key=>$leeloolxpvimeo ){
+foreach ($loopvideos as $key => $leeloolxpvimeo) {
 
     $coursecontext = context_course::instance($leeloolxpvimeo->course);
-    if(is_enrolled($coursecontext, $USER->id)){
+    if (is_enrolled($coursecontext, $USER->id)) {
         $loopvideos[$key]->enrolled = 'enrolled';
-    }else{
+    } else {
         $loopvideos[$key]->enrolled = 'notenrolled';
     }
 
-    $url = 'https://api.vimeo.com/videos/'.$leeloolxpvimeo->vimeo_video_id;
+    $url = 'https://api.vimeo.com/videos/' . $leeloolxpvimeo->vimeo_video_id;
 
     $postdata = array();
 
     $curl = new curl;
 
     $headers = array();
-    $headers[] = 'Authorization: bearer '.$leeloolxpvimeo->vimeo_token;
+    $headers[] = 'Authorization: bearer ' . $leeloolxpvimeo->vimeo_token;
 
     $curloptions = array(
         'CURLOPT_HTTPHEADER' => $headers,
@@ -141,22 +139,20 @@ foreach( $loopvideos as $key=>$leeloolxpvimeo ){
     $arroutput = json_decode($output);
     $loopvideos[$key]->image = $arroutput->pictures->base_link;
 
-    $leeloolxpmod = $DB->get_record_sql('SELECT cm.id FROM {course_modules} cm left join {modules} m on m.id = cm.module left join {leeloolxpvimeo} vinner on vinner.id = cm.instance where m.name = "leeloolxpvimeo" and vinner.id = ?', array($leeloolxpvimeo->id) );
+    $leeloolxpmod = $DB->get_record_sql('SELECT cm.id FROM {course_modules} cm left join {modules} m on m.id = cm.module left join {leeloolxpvimeo} vinner on vinner.id = cm.instance where m.name = "leeloolxpvimeo" and vinner.id = ?', array($leeloolxpvimeo->id));
 
     $loopvideos[$key]->modid = $leeloolxpmod->id;
 
-    if( $leeloolxpvimeo->enrolled == "enrolled" ){
-        $link = $CFG->wwwroot . '/mod/leeloolxpvimeo/tv_single.php?id='.$leeloolxpmod->id;
+    if ($leeloolxpvimeo->enrolled == "enrolled") {
+        $link = $CFG->wwwroot . '/mod/leeloolxpvimeo/tv_single.php?id=' . $leeloolxpmod->id;
         $enrollicon = '<i class="fa fa-check-circle"></i>';
-    }else{
+    } else {
         $link = "javascript:void(0);";
-        $link = $CFG->wwwroot . '/mod/leeloolxpvimeo/tv_single.php?id='.$leeloolxpmod->id;
+        $link = $CFG->wwwroot . '/mod/leeloolxpvimeo/tv_single.php?id=' . $leeloolxpmod->id;
         $enrollicon = '<i class="fa fa-plus-circle"></i>';
     }
 
-    $listhtml .= "<div class='vimeovideosin ".$leeloolxpvimeo->enrolled."'><a href='".$link."'><div class='vimeovideoimg'><img src='".$arroutput->pictures->base_link."'/></div><div class='vimeovideotitle'>".$leeloolxpvimeo->name."</div><div class='vimeovideocourse'><span class='vimeocoursename'>".$leeloolxpvimeo->coursename."</span><span class='vimeoenrollicon'>".$enrollicon."</span></div></a></div>";
-
-
+    $listhtml .= "<div class='vimeovideosin " . $leeloolxpvimeo->enrolled . "'><a href='" . $link . "'><div class='vimeovideoimg'><img src='" . $arroutput->pictures->base_link . "'/></div><div class='vimeovideotitle'>" . $leeloolxpvimeo->name . "</div><div class='vimeovideocourse'><span class='vimeocoursename'>" . $leeloolxpvimeo->coursename . "</span><span class='vimeoenrollicon'>" . $enrollicon . "</span></div></a></div>";
 }
 
 $PAGE->set_url('/mod/leeloolxpvimeo/tv.php');
@@ -166,21 +162,21 @@ $PAGE->set_title('TV');
 echo $OUTPUT->header();
 
 $hidecountcss = '';
-if( $searchstring == '' ){
+if ($searchstring == '') {
     $hidecountcss = 'style="visibility: hidden;"';
 }
 
-echo '<div class="search_vimeotv_nav"><div class="search_vimeotv_left"><ul><li><a href="'.$CFG->wwwroot.'"><img src="'.$CFG->wwwroot.'/mod/leeloolxpvimeo/pix/home-icn-img.png" /></a></li><li><a href="'.$CFG->wwwroot.'/mod/leeloolxpvimeo/tv.php"><img src="'.$CFG->wwwroot.'/mod/leeloolxpvimeo/pix/play-icn-img.png" /></a></li></ul></div> <div class="search_vimeotv_div"><input class="search_vimeotv" value="'.$searchstring.'" placeholder="Search Videos"/> <button class="search_vimeotv_btn">Search</button></div></div><div class="search_vimeotv_btm"><div class="search_vi_lft" '.$hidecountcss.' ><span class="total_results">'.$leeloolxpvimeoscount->total.'</span> results for <span class="searchstring">'.$searchstring.'</span></div><div class="search_vi_rit">Sort by: <select class="leeloolxpvimeosortby"><!--<option value="relevance">Relevance</option> --><option value="latest">Recently uploaded</option> <!--<option value="popularity">Popularity</option>--> <option value="nameasc">Title (A to Z)</option> <option value="namedesc">Title (Z to A)</option> <!--<option value="long">Longest</option> <option value="short">Shortest</option>--></select></div></div>';
+echo '<div class="search_vimeotv_nav"><div class="search_vimeotv_left"><ul><li><a href="' . $CFG->wwwroot . '"><img src="' . $CFG->wwwroot . '/mod/leeloolxpvimeo/pix/home-icn-img.png" /></a></li><li><a href="' . $CFG->wwwroot . '/mod/leeloolxpvimeo/tv.php"><img src="' . $CFG->wwwroot . '/mod/leeloolxpvimeo/pix/play-icn-img.png" /></a></li></ul></div> <div class="search_vimeotv_div"><input class="search_vimeotv" value="' . $searchstring . '" placeholder="Search Videos"/> <button class="search_vimeotv_btn">Search</button></div></div><div class="search_vimeotv_btm"><div class="search_vi_lft" ' . $hidecountcss . ' ><span class="total_results">' . $leeloolxpvimeoscount->total . '</span> results for <span class="searchstring">' . $searchstring . '</span></div><div class="search_vi_rit">Sort by: <select class="leeloolxpvimeosortby"><!--<option value="relevance">Relevance</option> --><option value="latest">Recently uploaded</option> <!--<option value="popularity">Popularity</option>--> <option value="nameasc">Title (A to Z)</option> <option value="namedesc">Title (Z to A)</option> <!--<option value="long">Longest</option> <option value="short">Shortest</option>--></select></div></div>';
 
-echo '<div class="nosearchresults" '.$nosearchresultscss.'>Try searching again using broader keywords.</br>You could also watch one of the videos below instead.</div>';
+echo '<div class="nosearchresults" ' . $nosearchresultscss . '>Try searching again using broader keywords.</br>You could also watch one of the videos below instead.</div>';
 
-echo '<div class="vimeovideoslist">'.$listhtml.'</div><div class="vimeovideosloading" style="display:none;"><i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i><span class="sr-only">Loading...</span></div>';
+echo '<div class="vimeovideoslist">' . $listhtml . '</div><div class="vimeovideosloading" style="display:none;"><i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i><span class="sr-only">Loading...</span></div>';
 
 
 echo '<input type="hidden" class="vimeopagelimit" value="12"/>
 <input type="hidden" class="vimeopagenext" value="2"/>
 <input type="hidden" class="vimeoshown" value="12"/>
-<input type="hidden" class="vimeototal" value="'.$leeloolxpvimeoscount->total.'"/>';
+<input type="hidden" class="vimeototal" value="' . $leeloolxpvimeoscount->total . '"/>';
 $PAGE->requires->js_init_code('require(["jquery"], function ($) {
     $(document).ready(function () {
 
@@ -235,8 +231,8 @@ $PAGE->requires->js_init_code('require(["jquery"], function ($) {
                             var loopvideos = responsejson.videos;
                         }
 
-                        $.each(loopvideos, function(key,val) {  
-                            
+                        $.each(loopvideos, function(key,val) {
+
                             if( val.enrolled == "enrolled" ){
                                 var link = "' . $CFG->wwwroot . '/mod/leeloolxpvimeo/tv_single.php?id="+val.modid;
                                 var enrollicon = \'<i class="fa fa-check-circle"></i>\';
@@ -245,9 +241,9 @@ $PAGE->requires->js_init_code('require(["jquery"], function ($) {
                                 var link = "' . $CFG->wwwroot . '/mod/leeloolxpvimeo/tv_single.php?id="+val.modid;
                                 var enrollicon = \'<i class="fa fa-plus-circle"></i>\';
                             }
-                            
+
                             $(".vimeovideoslist").append("<div class=\'vimeovideosin "+val.enrolled+" \'><a href=\'"+link+"\'><div class=\'vimeovideoimg\'><img src=\'"+val.image+"\'/></div><div class=\'vimeovideotitle\'>"+val.name+"</div><div class=\'vimeovideocourse\'><span class=\'vimeocoursename\'>"+val.coursename+"</span><span class=\'vimeoenrollicon\'>"+enrollicon+"</span></div></a></div>");
-                        });   
+                        });
 
                     }
                 );
@@ -261,10 +257,10 @@ $PAGE->requires->js_init_code('require(["jquery"], function ($) {
             if(key == 13)  // the enter key code
             {
                 getvideos(1);
-                return false;  
+                return false;
             }
         });
-        
+
         $(".search_vimeotv_btn").click(function (e) {
             getvideos(1);
         });
@@ -274,15 +270,15 @@ $PAGE->requires->js_init_code('require(["jquery"], function ($) {
         });
 
         var lastScrollTop = 0;
-        $(window).scroll(function () { 
+        $(window).scroll(function () {
 
             var st = $(this).scrollTop();
 
             if ( ($(window).scrollTop() >= $( ".vimeovideoslist").offset().top + $(".vimeovideoslist").outerHeight() - window.innerHeight) && st > lastScrollTop ) {
 
                 var page = $(".vimeopagenext").val();
-                getvideos(page);                    
-                
+                getvideos(page);
+
             }
 
             lastScrollTop = st;

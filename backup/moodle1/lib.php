@@ -110,8 +110,10 @@ class moodle1_mod_leeloolxpvimeo_handler extends moodle1_resource_successor_hand
 
         // write leeloolxpvimeo.xml
         $this->open_xml_writer("activities/leeloolxpvimeo_{$moduleid}/leeloolxpvimeo.xml");
-        $this->xmlwriter->begin_tag('activity', array('id' => $instanceid, 'moduleid' => $moduleid,
-            'modulename' => 'leeloolxpvimeo', 'contextid' => $contextid));
+        $this->xmlwriter->begin_tag('activity', array(
+            'id' => $instanceid, 'moduleid' => $moduleid,
+            'modulename' => 'leeloolxpvimeo', 'contextid' => $contextid
+        ));
         $this->write_xml('leeloolxpvimeo', $leeloolxpvimeo, array('/leeloolxpvimeo/id'));
         $this->xmlwriter->end_tag('activity');
         $this->close_xml_writer();

@@ -30,8 +30,8 @@ require_once($CFG->libdir . '/completionlib.php');
 global $CFG;
 require_once($CFG->libdir . '/filelib.php');
 
-$id = optional_param('id', 0, PARAM_INT); // Course Module ID
-$p = optional_param('p', 0, PARAM_INT); // Page instance ID
+$id = optional_param('id', 0, PARAM_INT); // Course Module ID.
+$p = optional_param('p', 0, PARAM_INT); // Page instance ID.
 $inpopup = optional_param('inpopup', 0, PARAM_BOOL);
 
 if ($p) {
@@ -62,10 +62,9 @@ $event->add_record_snapshot('course', $course);
 $event->add_record_snapshot('leeloolxpvimeo', $leeloolxpvimeo);
 $event->trigger();
 
-// Update 'viewed' state if required by completion system
+// Update 'viewed' state if required by completion system.
 require_once($CFG->libdir . '/completionlib.php');
 $completion = new completion_info($course);
-// $completion->set_module_viewed($cm);
 
 $PAGE->set_url('/mod/leeloolxpvimeo/view.php', array('id' => $cm->id));
 

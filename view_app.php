@@ -30,8 +30,8 @@ require_once($CFG->libdir . '/completionlib.php');
 global $CFG, $USER;
 require_once($CFG->libdir . '/filelib.php');
 
-$id = optional_param('id', 0, PARAM_INT); // Course Module ID
-$p = optional_param('p', 0, PARAM_INT); // Page instance ID
+$id = optional_param('id', 0, PARAM_INT); // Course Module ID.
+$p = optional_param('p', 0, PARAM_INT); // Page instance ID.
 $inpopup = optional_param('inpopup', 0, PARAM_BOOL);
 
 $token = optional_param('token', '', PARAM_ALPHANUM);

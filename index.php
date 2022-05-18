@@ -91,7 +91,8 @@ foreach ($leeloolxpvimeos as $leeloolxpvimeo) {
     $table->data[] = array(
         $printsection,
         "<a $class href=\"view.php?id=$cm->id\">" . format_string($leeloolxpvimeo->name) . "</a>",
-        format_module_intro('leeloolxpvimeo', $leeloolxpvimeo, $cm->id));
+        format_module_intro('leeloolxpvimeo', $leeloolxpvimeo, $cm->id)
+    );
 }
 
 echo html_writer::table($table);

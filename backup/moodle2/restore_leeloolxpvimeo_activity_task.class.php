@@ -69,7 +69,6 @@ class restore_leeloolxpvimeo_activity_task extends restore_activity_task {
         $rules[] = new restore_decode_rule('LEELOOLXPVIMEOINDEX', '/mod/leeloolxpvimeo/index.php?id=$1', 'course');
 
         return $rules;
-
     }
 
     /**

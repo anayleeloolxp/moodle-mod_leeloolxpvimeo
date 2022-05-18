@@ -216,8 +216,11 @@ function leeloolxpvimeo_get_coursemodule_info($coursemodule) {
     require_once("$CFG->libdir/resourcelib.php");
     require_once($CFG->libdir . '/filelib.php');
 
-    if (!$leeloolxpvimeo = $DB->get_record('leeloolxpvimeo', array('id' => $coursemodule->instance),
-        'id, name, display, displayoptions, intro, introformat, vimeo_video_id, vimeo_token')) {
+    if (!$leeloolxpvimeo = $DB->get_record(
+        'leeloolxpvimeo',
+        array('id' => $coursemodule->instance),
+        'id, name, display, displayoptions, intro, introformat, vimeo_video_id, vimeo_token'
+    )) {
         return null;
     }
 
@@ -225,14 +228,14 @@ function leeloolxpvimeo_get_coursemodule_info($coursemodule) {
     $info->name = $leeloolxpvimeo->name;
 
     //$leeloolxplicense = get_config('mod_leeloolxpvimeo')->license;
-    $url = 'https://api.vimeo.com/videos/'.$leeloolxpvimeo->vimeo_video_id;
+    $url = 'https://api.vimeo.com/videos/' . $leeloolxpvimeo->vimeo_video_id;
 
     $postdata = array();
 
     $curl = new curl;
 
     $headers = array();
-    $headers[] = 'Authorization: bearer '.$leeloolxpvimeo->vimeo_token;
+    $headers[] = 'Authorization: bearer ' . $leeloolxpvimeo->vimeo_token;
 
     $curloptions = array(
         'CURLOPT_HTTPHEADER' => $headers,
@@ -243,7 +246,7 @@ function leeloolxpvimeo_get_coursemodule_info($coursemodule) {
     $output = $curl->post($url, $postdata, $curloptions);
     $arroutput = json_decode($output);
     $info->iconurl = $arroutput->pictures->base_link;
-    
+
     if ($coursemodule->showdescription) {
         // Convert intro to html. Do not filter cached version, filters run at display time.
 

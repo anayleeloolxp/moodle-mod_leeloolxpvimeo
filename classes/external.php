@@ -66,10 +66,12 @@ class mod_leeloolxpvimeo_external extends external_api {
         global $DB, $CFG;
         require_once($CFG->dirroot . "/mod/leeloolxpvimeo/lib.php");
 
-        $params = self::validate_parameters(self::view_leeloolxpvimeo_parameters(),
+        $params = self::validate_parameters(
+            self::view_leeloolxpvimeo_parameters(),
             array(
                 'leeloolxpvimeoid' => $leeloolxpvimeoid,
-            ));
+            )
+        );
         $warnings = array();
 
         // Request and permission validation.
@@ -112,10 +114,13 @@ class mod_leeloolxpvimeo_external extends external_api {
      * @since Moodle 3.3
      */
     public static function get_leeloolxpvimeos_by_courses_parameters() {
-        return new external_function_parameters (
+        return new external_function_parameters(
             array(
                 'courseids' => new external_multiple_structure(
-                    new external_value(PARAM_INT, 'Course id'), 'Array of course ids', VALUE_DEFAULT, array()
+                    new external_value(PARAM_INT, 'Course id'),
+                    'Array of course ids',
+                    VALUE_DEFAULT,
+                    array()
                 ),
             )
         );
@@ -166,13 +171,20 @@ class mod_leeloolxpvimeo_external extends external_api {
                 $leeloolxpvimeo->introfiles = external_util::get_area_files($context->id, 'mod_leeloolxpvimeo', 'intro', false, false);
 
                 $options = array('noclean' => true);
-                list($leeloolxpvimeo->content, $leeloolxpvimeo->contentformat) = external_format_text($leeloolxpvimeo->content, $leeloolxpvimeo->contentformat,
-                                                                $context->id, 'mod_leeloolxpvimeo', 'content', $leeloolxpvimeo->revision, $options);
+                list($leeloolxpvimeo->content, $leeloolxpvimeo->contentformat) = external_format_text(
+                    $leeloolxpvimeo->content,
+                    $leeloolxpvimeo->contentformat,
+                    $context->id,
+                    'mod_leeloolxpvimeo',
+                    'content',
+                    $leeloolxpvimeo->revision,
+                    $options
+                );
                 $leeloolxpvimeo->contentfiles = external_util::get_area_files($context->id, 'mod_leeloolxpvimeo', 'content');
 
                 $leeloolxpvimeo->iframesrc = 'https://player.vimeo.com/video/' . $leeloolxpvimeo->vimeo_video_id;
-                
-                $leeloolxpvimeo->iframesrc = $CFG->wwwroot.'/mod/leeloolxpvimeo/view_app.php?id='.$leeloolxpvimeo->coursemodule.'&token='.$token.'&userid='.$USER->id;
+
+                $leeloolxpvimeo->iframesrc = $CFG->wwwroot . '/mod/leeloolxpvimeo/view_app.php?id=' . $leeloolxpvimeo->coursemodule . '&token=' . $token . '&userid=' . $USER->id;
 
                 $returnedleeloolxpvimeos[] = $leeloolxpvimeo;
             }
@@ -257,12 +269,14 @@ class mod_leeloolxpvimeo_external extends external_api {
         require_once($CFG->dirroot . "/mod/leeloolxpvimeo/lib.php");
         require_once($CFG->libdir . '/completionlib.php');
 
-        $params = self::validate_parameters(self::markcomplete_leeloolxpvimeo_parameters(),
+        $params = self::validate_parameters(
+            self::markcomplete_leeloolxpvimeo_parameters(),
             array(
                 'cmid' => $cmid,
                 'completionstate' => $completionstate,
                 'userid' => $userid,
-            ));
+            )
+        );
         $warnings = array();
 
         $targetstate = COMPLETION_COMPLETE;
@@ -313,5 +327,4 @@ class mod_leeloolxpvimeo_external extends external_api {
             )
         );
     }
-
 }

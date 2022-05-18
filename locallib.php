@@ -79,9 +79,12 @@ function leeloolxpvimeo_course_image($course) {
     if ($course->id > 0 && $course->get_course_overviewfiles()) {
         foreach ($course->get_course_overviewfiles() as $file) {
             $isimage = $file->is_valid_image();
-            $url = file_encode_url("$CFG->wwwroot/pluginfile.php",
+            $url = file_encode_url(
+                "$CFG->wwwroot/pluginfile.php",
                 '/' . $file->get_contextid() . '/' . $file->get_component() . '/' .
-                $file->get_filearea() . $file->get_filepath() . $file->get_filename(), !$isimage);
+                    $file->get_filearea() . $file->get_filepath() . $file->get_filename(),
+                !$isimage
+            );
             if ($isimage) {
                 return $url;
             } else {

@@ -116,15 +116,15 @@ class mod_leeloolxpvimeo_mod_form extends moodleform_mod {
 
         $mform->addElement('float', 'vimeo_video_id', get_string('regular_vimeo_video_id', 'leeloolxpvimeo'), array('size' => '48'));
         $mform->addElement('text', 'vimeo_token', get_string('regular_vimeo_token', 'leeloolxpvimeo'), array('size' => '48'));
-        $mform->setDefault('vimeo_token',$config->vimeo_token);
-        
+        $mform->setDefault('vimeo_token', $config->vimeo_token);
+
         $mform->addElement('float', 'width', get_string('regular_width', 'leeloolxpvimeo'), array('size' => '48'));
-        $mform->setDefault('width',$config->default_width);
+        $mform->setDefault('width', $config->default_width);
         $mform->addElement('float', 'height', get_string('regular_height', 'leeloolxpvimeo'), array('size' => '48'));
-        $mform->setDefault('height',$config->default_height);
+        $mform->setDefault('height', $config->default_height);
         $mform->addElement('advcheckbox', 'border', get_string('regular_border', 'leeloolxpvimeo'));
         $mform->addElement('text', 'allow', get_string('regular_allow', 'leeloolxpvimeo'), array('size' => '48'));
-        $mform->setDefault('allow',$config->default_allow);
+        $mform->setDefault('allow', $config->default_allow);
         if (!empty($CFG->formatstringstriptags)) {
             $mform->setType('allow', PARAM_TEXT);
         } else {
@@ -174,8 +174,10 @@ class mod_leeloolxpvimeo_mod_form extends moodleform_mod {
 
         // Add legacy files flag only if used
         if (isset($this->current->legacyfiles) and $this->current->legacyfiles != RESOURCELIB_LEGACYFILES_NO) {
-            $options = array(RESOURCELIB_LEGACYFILES_DONE => get_string('legacyfilesdone', 'leeloolxpvimeo'),
-                RESOURCELIB_LEGACYFILES_ACTIVE => get_string('legacyfilesactive', 'leeloolxpvimeo'));
+            $options = array(
+                RESOURCELIB_LEGACYFILES_DONE => get_string('legacyfilesdone', 'leeloolxpvimeo'),
+                RESOURCELIB_LEGACYFILES_ACTIVE => get_string('legacyfilesactive', 'leeloolxpvimeo')
+            );
             $mform->addElement('select', 'legacyfiles', get_string('legacyfiles', 'leeloolxpvimeo'), $options);
             $mform->setAdvanced('legacyfiles', 1);
         }

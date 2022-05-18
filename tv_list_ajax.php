@@ -36,54 +36,52 @@ $limit = optional_param('limit', 12, PARAM_INT); // Page instance ID
 $sortby = optional_param('sortby', 'latest', PARAM_RAW); // Page instance ID
 
 $sortbysql = 'ORDER BY v.name ASC';
-if( $sortby == 'nameasc' ){
+if ($sortby == 'nameasc') {
     $sortbysql = 'ORDER BY v.name ASC';
-}elseif( $sortby == 'namedesc' ){
+} elseif ($sortby == 'namedesc') {
     $sortbysql = 'ORDER BY v.name DESC';
-}elseif( $sortby == 'latest' ){
+} elseif ($sortby == 'latest') {
     $sortbysql = 'ORDER BY v.id DESC';
 }
 
 $perpage = $limit;
 $from = 0;
 
-if( $p ){
+if ($p) {
     $from = $perpage * ($p - 1);
 }
 
 if ($searchstring) {
 
-    $leeloolxpvimeos = $DB->get_records_sql("SELECT v.*, c.fullname coursename FROM {leeloolxpvimeo} v left join {course} c on c.id = v.course WHERE v.vimeo_video_id != '' AND ".$DB->sql_like('v.name', ':name', false, false)." ".$sortbysql, ['name' => '%'.$DB->sql_like_escape($searchstring).'%'], $from, $perpage);
+    $leeloolxpvimeos = $DB->get_records_sql("SELECT v.*, c.fullname coursename FROM {leeloolxpvimeo} v left join {course} c on c.id = v.course WHERE v.vimeo_video_id != '' AND " . $DB->sql_like('v.name', ':name', false, false) . " " . $sortbysql, ['name' => '%' . $DB->sql_like_escape($searchstring) . '%'], $from, $perpage);
 
-    $leeloolxpvimeoscount = $DB->get_record_sql("SELECT count(*) total FROM {leeloolxpvimeo} v left join {course} c on c.id = v.course WHERE v.vimeo_video_id != '' AND ".$DB->sql_like('v.name', ':name', false, false)." ", ['name' => '%'.$DB->sql_like_escape($searchstring).'%']);
+    $leeloolxpvimeoscount = $DB->get_record_sql("SELECT count(*) total FROM {leeloolxpvimeo} v left join {course} c on c.id = v.course WHERE v.vimeo_video_id != '' AND " . $DB->sql_like('v.name', ':name', false, false) . " ", ['name' => '%' . $DB->sql_like_escape($searchstring) . '%']);
+} else {
 
-}else{
+    $leeloolxpvimeos = $DB->get_records_sql("SELECT v.*, c.fullname coursename FROM {leeloolxpvimeo} v left join {course} c on c.id = v.course" . " where v.vimeo_video_id != '' " . $sortbysql, [], $from, $perpage);
 
-    $leeloolxpvimeos = $DB->get_records_sql("SELECT v.*, c.fullname coursename FROM {leeloolxpvimeo} v left join {course} c on c.id = v.course"." where v.vimeo_video_id != '' ".$sortbysql, [], $from, $perpage);
-
-    $leeloolxpvimeoscount = $DB->get_record_sql("SELECT count(*) total FROM {leeloolxpvimeo} v left join {course} c on c.id = v.course"." where v.vimeo_video_id != '' ");
-
+    $leeloolxpvimeoscount = $DB->get_record_sql("SELECT count(*) total FROM {leeloolxpvimeo} v left join {course} c on c.id = v.course" . " where v.vimeo_video_id != '' ");
 }
 
 $leeloolxpvimeos = array_values($leeloolxpvimeos);
 
-foreach( $leeloolxpvimeos as $key=>$leeloolxpvimeo ){
+foreach ($leeloolxpvimeos as $key => $leeloolxpvimeo) {
 
     $coursecontext = context_course::instance($leeloolxpvimeo->course);
-    if(is_enrolled($coursecontext, $USER->id)){
+    if (is_enrolled($coursecontext, $USER->id)) {
         $leeloolxpvimeos[$key]->enrolled = 'enrolled';
-    }else{
+    } else {
         $leeloolxpvimeos[$key]->enrolled = 'notenrolled';
     }
 
-    $url = 'https://api.vimeo.com/videos/'.$leeloolxpvimeo->vimeo_video_id;
+    $url = 'https://api.vimeo.com/videos/' . $leeloolxpvimeo->vimeo_video_id;
 
     $postdata = array();
 
     $curl = new curl;
 
     $headers = array();
-    $headers[] = 'Authorization: bearer '.$leeloolxpvimeo->vimeo_token;
+    $headers[] = 'Authorization: bearer ' . $leeloolxpvimeo->vimeo_token;
 
     $curloptions = array(
         'CURLOPT_HTTPHEADER' => $headers,
@@ -95,32 +93,32 @@ foreach( $leeloolxpvimeos as $key=>$leeloolxpvimeo ){
     $arroutput = json_decode($output);
     $leeloolxpvimeos[$key]->image = $arroutput->pictures->base_link;
 
-    $leeloolxpmod = $DB->get_record_sql('SELECT cm.id FROM {course_modules} cm left join {modules} m on m.id = cm.module left join {leeloolxpvimeo} vinner on vinner.id = cm.instance where m.name = "leeloolxpvimeo" and vinner.id = ?', array($leeloolxpvimeo->id) );
+    $leeloolxpmod = $DB->get_record_sql('SELECT cm.id FROM {course_modules} cm left join {modules} m on m.id = cm.module left join {leeloolxpvimeo} vinner on vinner.id = cm.instance where m.name = "leeloolxpvimeo" and vinner.id = ?', array($leeloolxpvimeo->id));
 
     $leeloolxpvimeos[$key]->modid = $leeloolxpmod->id;
 }
 
-$leeloolxpextras = $DB->get_records_sql("SELECT v.*, c.fullname coursename FROM {leeloolxpvimeo} v left join {course} c on c.id = v.course where v.vimeo_video_id != '' ".$sortbysql." limit 12");
+$leeloolxpextras = $DB->get_records_sql("SELECT v.*, c.fullname coursename FROM {leeloolxpvimeo} v left join {course} c on c.id = v.course where v.vimeo_video_id != '' " . $sortbysql . " limit 12");
 
-if( $searchstring && $leeloolxpvimeoscount->total == 0 ){
+if ($searchstring && $leeloolxpvimeoscount->total == 0) {
 
-    foreach( $leeloolxpextras as $key=>$leeloolxpextra ){
+    foreach ($leeloolxpextras as $key => $leeloolxpextra) {
 
         $coursecontext = context_course::instance($leeloolxpextra->course);
-        if(is_enrolled($coursecontext, $USER->id)){
+        if (is_enrolled($coursecontext, $USER->id)) {
             $leeloolxpextras[$key]->enrolled = 'enrolled';
-        }else{
+        } else {
             $leeloolxpextras[$key]->enrolled = 'notenrolled';
         }
 
-        $url = 'https://api.vimeo.com/videos/'.$leeloolxpextra->vimeo_video_id;
+        $url = 'https://api.vimeo.com/videos/' . $leeloolxpextra->vimeo_video_id;
 
         $postdata = array();
 
         $curl = new curl;
 
         $headers = array();
-        $headers[] = 'Authorization: bearer '.$leeloolxpextra->vimeo_token;
+        $headers[] = 'Authorization: bearer ' . $leeloolxpextra->vimeo_token;
 
         $curloptions = array(
             'CURLOPT_HTTPHEADER' => $headers,
@@ -132,19 +130,18 @@ if( $searchstring && $leeloolxpvimeoscount->total == 0 ){
         $arroutput = json_decode($output);
         $leeloolxpextras[$key]->image = $arroutput->pictures->base_link;
 
-        $leeloolxpmod = $DB->get_record_sql('SELECT cm.id FROM {course_modules} cm left join {modules} m on m.id = cm.module left join {leeloolxpvimeo} vinner on vinner.id = cm.instance where m.name = "leeloolxpvimeo" and vinner.id = ?', array($leeloolxpextra->id) );
+        $leeloolxpmod = $DB->get_record_sql('SELECT cm.id FROM {course_modules} cm left join {modules} m on m.id = cm.module left join {leeloolxpvimeo} vinner on vinner.id = cm.instance where m.name = "leeloolxpvimeo" and vinner.id = ?', array($leeloolxpextra->id));
 
         $leeloolxpextras[$key]->modid = $leeloolxpmod->id;
     }
-
 }
 
 
 $response = array();
 $response['videos'] = $leeloolxpvimeos;
-$response['next'] = $p+1;
+$response['next'] = $p + 1;
 $response['totalobj'] = $leeloolxpvimeoscount;
-$response['shown'] = $perpage*$p;
+$response['shown'] = $perpage * $p;
 $response['leeloolxpextra'] = $leeloolxpextras;
 
 echo json_encode($response);

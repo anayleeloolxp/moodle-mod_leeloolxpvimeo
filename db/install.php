@@ -35,5 +35,4 @@ defined('MOODLE_INTERNAL') || die;
  */
 function xmldb_leeloolxpvimeo_install() {
     global $CFG;
-
 }

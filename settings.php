@@ -32,4 +32,20 @@ if ($ADMIN->fulltree) {
         get_string('license', 'mod_leeloolxpvimeo'),
         0
     ));
+    $choices = array(
+        '10' => '10%',
+        '20' => '20%',
+        '30' => '30%',
+        '40' => '40%',
+        '50' => '50%',
+        '60' => '60%',
+        '70' => '70%',
+        '80' => '80%',
+        '90' => '90%',
+        '100' => '100%',
+    );
+    $namemarkcompleteafter = 'mod_leeloolxpvimeo/markcompleteafter';
+    $titlemarkcompleteafter = get_string('markcompleteafter', 'mod_leeloolxpvimeo');
+    $descriptionmarkcompleteafter = get_string('markcompleteafter_description', 'mod_leeloolxpvimeo');
+    $settings->add(new admin_setting_configselect($namemarkcompleteafter, $titlemarkcompleteafter, $descriptionmarkcompleteafter, 10, $choices));
 }

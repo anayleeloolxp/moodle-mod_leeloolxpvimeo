@@ -85,12 +85,12 @@ echo $OUTPUT->header();
 $videotitlearr = explode(' ', $leeloolxpvimeo->name);
 
 $namesql = '';
-foreach( $videotitlearr as $videtitlesin){
-    $videtitlesinsql = str_ireplace( '?', '', $videtitlesin );
-    $namesql .= ' OR v.name LIKE "%'.$videtitlesinsql.'%"';
+foreach ($videotitlearr as $videtitlesin) {
+    $videtitlesinsql = str_ireplace('?', '', $videtitlesin);
+    $namesql .= ' OR v.name LIKE "%' . $videtitlesinsql . '%"';
 }
 
-$leeloolxprelatedvimeosall = $DB->get_records_sql('SELECT v.*, c.fullname coursename FROM {leeloolxpvimeo} v left join {course} c on c.id = v.course'.' where v.course = ?'.$namesql, [$course->id], 0, 10);
+$leeloolxprelatedvimeosall = $DB->get_records_sql('SELECT v.*, c.fullname coursename FROM {leeloolxpvimeo} v left join {course} c on c.id = v.course' . ' where v.course = ?' . $namesql, [$course->id], 0, 10);
 
 $leeloolxprelatedvimeos = array_values($leeloolxprelatedvimeosall);
 
@@ -103,6 +103,7 @@ if (!empty($options['printintro'])) {
 }
 
 $leeloolxplicense = get_config('mod_leeloolxpvimeo')->license;
+$markcompleteafter = get_config('mod_leeloolxpvimeo')->markcompleteafter;
 $url = 'https://leeloolxp.com/api_moodle.php/?action=page_info';
 $postdata = [
     'license_key' => $leeloolxplicense,
@@ -151,13 +152,13 @@ if (!$output = $curl->post($url, $postdata, $options)) {
 
 $courseurl = new moodle_url('\course/view.php', array('id' => $course->id));
 
-if( $_COOKIE['autoplay'] == 1){
+if ($_COOKIE['autoplay'] == 1) {
     $autoplaychecked = 'checked';
-}else{
+} else {
     $autoplaychecked = '';
 }
 
-echo '<div class="search_vimeotv_nav"><div class="search_vimeotv_left"><ul><li><a href="'.$CFG->wwwroot.'"><img src="'.$CFG->wwwroot.'/mod/leeloolxpvimeo/pix/home-icn-img.png"></a></li><li><a href="'.$courseurl.'"><div class="vimeotv-iim"><div class="vimeotv-im"><img src="'.leeloolxpvimeo_course_image($course).'"></div><div class="vimeotv-txtt"><p>'.$course->fullname.'</p></div></div></a></li></ul></div> <div class="search_vimeotv_div"><form method="GET" action="'.$CFG->wwwroot.'/mod/leeloolxpvimeo/tv.php" ><input class="search_vimeotv" name="search" value="" placeholder="Search Videos"> <button class="search_vimeotv_btn">Search</button></form></div><div class="search_vimeotv_right"><div class="vimeotv_auto">Autoplay <span><input '.$autoplaychecked.' type="checkbox" name="autoplay_vimeo" id="autoplay_vimeo" /><label for="autoplay_vimeo"></label></span></div><div class="vimeotv_close"><a href="'.$courseurl.'">X</a></div></div></div>';
+echo '<div class="search_vimeotv_nav"><div class="search_vimeotv_left"><ul><li><a href="' . $CFG->wwwroot . '"><img src="' . $CFG->wwwroot . '/mod/leeloolxpvimeo/pix/home-icn-img.png"></a></li><li><a href="' . $courseurl . '"><div class="vimeotv-iim"><div class="vimeotv-im"><img src="' . leeloolxpvimeo_course_image($course) . '"></div><div class="vimeotv-txtt"><p>' . $course->fullname . '</p></div></div></a></li></ul></div> <div class="search_vimeotv_div"><form method="GET" action="' . $CFG->wwwroot . '/mod/leeloolxpvimeo/tv.php" ><input class="search_vimeotv" name="search" value="" placeholder="Search Videos"> <button class="search_vimeotv_btn">Search</button></form></div><div class="search_vimeotv_right"><div class="vimeotv_auto">Autoplay <span><input ' . $autoplaychecked . ' type="checkbox" name="autoplay_vimeo" id="autoplay_vimeo" /><label for="autoplay_vimeo"></label></span></div><div class="vimeotv_close"><a href="' . $courseurl . '">X</a></div></div></div>';
 
 echo '<div class="tv_single_page_container"><div class="tv_single_page_left">';
 
@@ -193,8 +194,8 @@ $formatoptions->noclean = true;
 $formatoptions->overflowdiv = true;
 $formatoptions->context = $context;
 $content = format_text($content, $leeloolxpvimeo->contentformat, $formatoptions);
-echo '<h3>'.$leeloolxpvimeo->name.'</h3>';
-echo '<p class="publisheddate">'.get_string('publishedon', 'mod_leeloolxpvimeo').date('M-d-Y',$leeloolxpvimeo->timemodified).'</p></h3>';
+echo '<h3>' . $leeloolxpvimeo->name . '</h3>';
+echo '<p class="publisheddate">' . get_string('publishedon', 'mod_leeloolxpvimeo') . date('M-d-Y', $leeloolxpvimeo->timemodified) . '</p></h3>';
 echo $OUTPUT->box($content, "generalbox center clearfix");
 global $USER;
 if ($show == 1) {
@@ -211,9 +212,37 @@ if ($show == 1) {
                 }
             });
 
+            var marked = 0;
+            var markcompleteafter = ' . ($markcompleteafter / 100) . ';
             player.on("timeupdate", function(data){
                 var running_time = data.seconds;
                 Cookies.set("vimeotimeElapsed' . $cm->id . '", data.seconds);
+                if( marked == 0 && data.percent >= markcompleteafter  ){
+                    console.warn("marked");
+                    marked = 1;
+
+                    $.post(
+                        "' . $CFG->wwwroot . '/mod/leeloolxpvimeo/markcomplete.php",
+                        {
+                            id:"' . $cm->id . '",
+                            completionstate:"1",
+                            fromajax:"1",
+                            sesskey:"' . $USER->sesskey . '"
+                        }, function(response){
+                            var autoplay = Cookies.get("autoplay");
+                            if( autoplay == 1 ){
+                                //console.log("autoplay");
+                                var nextvideo = $("#nextvideo").val();
+                                if( nextvideo != "" ){
+                                    window.location.href = nextvideo;
+                                }
+                            }else{
+                                //console.log("notautoplay");
+                            }
+                            //console.log("marked complete");
+                    });
+
+                }
             });
 
             var timeElapsed = Cookies.get("vimeotimeElapsed' . $cm->id . '");
@@ -223,28 +252,6 @@ if ($show == 1) {
 
             player.on("ended", function() {
                 console.log("ended the video!");
-
-                $.post(
-                    "' . $CFG->wwwroot . '/mod/leeloolxpvimeo/markcomplete.php",
-                    {
-                        id:"' . $cm->id . '",
-                        completionstate:"1",
-                        fromajax:"1",
-                        sesskey:"' . $USER->sesskey . '"
-                    }, function(response){
-                        var autoplay = Cookies.get("autoplay");
-                        if( autoplay == 1 ){
-                            //console.log("autoplay");
-                            var nextvideo = $("#nextvideo").val();
-                            if( nextvideo != "" ){
-                                window.location.href = nextvideo;
-                            }
-                        }else{
-                            //console.log("notautoplay");
-                        }
-                        //console.log("marked complete");
-                });
-
             });
 
             player.on("play", function() {
@@ -268,24 +275,24 @@ if ($show == 1) {
 
     $count = 1;
     $thiskey = 0;
-    foreach( $leeloolxprelatedvimeos as $key=>$relatedvideo ){
+    foreach ($leeloolxprelatedvimeos as $key => $relatedvideo) {
 
-        $leeloolxpmod = $DB->get_record_sql('SELECT cm.id FROM {course_modules} cm left join {modules} m on m.id = cm.module left join {leeloolxpvimeo} vinner on vinner.id = cm.instance where m.name = "leeloolxpvimeo" and vinner.id = ?', array($relatedvideo->id) );
+        $leeloolxpmod = $DB->get_record_sql('SELECT cm.id FROM {course_modules} cm left join {modules} m on m.id = cm.module left join {leeloolxpvimeo} vinner on vinner.id = cm.instance where m.name = "leeloolxpvimeo" and vinner.id = ?', array($relatedvideo->id));
 
-        $relatedvideourl = $CFG->wwwroot . '/mod/leeloolxpvimeo/tv_single.php?id='.$leeloolxpmod->id;
+        $relatedvideourl = $CFG->wwwroot . '/mod/leeloolxpvimeo/tv_single.php?id=' . $leeloolxpmod->id;
 
-        $url = 'https://api.vimeo.com/videos/'.$relatedvideo->vimeo_video_id;
+        $url = 'https://api.vimeo.com/videos/' . $relatedvideo->vimeo_video_id;
 
         $leeloolxprelatedvimeos[$key]->url = $relatedvideourl;
 
-        if( $leeloolxpmod->id == $id ){
+        if ($leeloolxpmod->id == $id) {
             $thiskey = $key;
         }
-        
+
         $postdata = array();
         $curl = new curl;
         $headers = array();
-        $headers[] = 'Authorization: bearer '.$relatedvideo->vimeo_token;
+        $headers[] = 'Authorization: bearer ' . $relatedvideo->vimeo_token;
         $curloptions = array(
             'CURLOPT_HTTPHEADER' => $headers,
             'CURLOPT_RETURNTRANSFER' => true,
@@ -293,28 +300,28 @@ if ($show == 1) {
         );
         $output = $curl->post($url, $postdata, $curloptions);
         $arroutput = json_decode($output);
-        if( $arroutput->pictures->base_link != '' ){
-            $videoicon = '<img src="'.$arroutput->pictures->base_link.'"/>';
-        }else{
-            $videoicon = '<img src="'.$CFG->wwwroot.'/mod/leeloolxpvimeo/pix/default_icon.png"/>';
+        if ($arroutput->pictures->base_link != '') {
+            $videoicon = '<img src="' . $arroutput->pictures->base_link . '"/>';
+        } else {
+            $videoicon = '<img src="' . $CFG->wwwroot . '/mod/leeloolxpvimeo/pix/default_icon.png"/>';
         }
-        
+
         $relatedvideoshtml .= '<div class="related_video_item">
             <div class="related_video_img">
-                '.$videoicon.'
+                ' . $videoicon . '
             </div>
             <div class="related_video_txt">
-                <h4><a href="'.$relatedvideourl.'">'.$relatedvideo->name.'</a></h4>
-                <p>'.get_string('publishedon', 'mod_leeloolxpvimeo').date('M-d-Y',$relatedvideo->timemodified).'</p>
+                <h4><a href="' . $relatedvideourl . '">' . $relatedvideo->name . '</a></h4>
+                <p>' . get_string('publishedon', 'mod_leeloolxpvimeo') . date('M-d-Y', $relatedvideo->timemodified) . '</p>
             </div>
         </div>';
 
         $count++;
     }
 
-    if( isset($leeloolxprelatedvimeos[$thiskey+1]) ){
-        $nextvideo = $leeloolxprelatedvimeos[$thiskey+1]->url;
-    }else{
+    if (isset($leeloolxprelatedvimeos[$thiskey + 1])) {
+        $nextvideo = $leeloolxprelatedvimeos[$thiskey + 1]->url;
+    } else {
         $nextvideo = $leeloolxprelatedvimeos[0]->url;
     }
 
@@ -322,16 +329,15 @@ if ($show == 1) {
         <div class="related_video_section">
             <div class="related_video_head">Related Videos</div>
             <div class="related_video_items">
-                
-                '.$relatedvideoshtml.'
-            
+
+                ' . $relatedvideoshtml . '
+
             </div>
-            <input type="hidden" id="nextvideo" value="'.$nextvideo.'"/>
+            <input type="hidden" id="nextvideo" value="' . $nextvideo . '"/>
         </div>
     ';
 
     echo '</div></div>';
-
 }
 
 echo $OUTPUT->footer();

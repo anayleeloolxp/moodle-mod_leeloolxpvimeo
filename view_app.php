@@ -54,6 +54,7 @@ $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST)
 $PAGE->set_url('/mod/leeloolxpvimeo/view_app.php', array('id' => $cm->id));
 
 $leeloolxplicense = get_config('mod_leeloolxpvimeo')->license;
+$markcompleteafter = get_config('mod_leeloolxpvimeo')->markcompleteafter;
 $url = 'https://leeloolxp.com/api_moodle.php/?action=page_info';
 $postdata = [
     'license_key' => $leeloolxplicense,
@@ -143,9 +144,28 @@ if ($show == 1) {
         var iframe = document.querySelector("#vimeoiframe");
         var player = new Vimeo.Player(iframe);
 
+        var marked = 0;
+            var markcompleteafter = ' . ($markcompleteafter / 100) . ';
         player.on("timeupdate", function(data){
             var running_time = data.seconds;
             Cookies.set("vimeotimeElapsed' . $cm->id . '", data.seconds);
+            if( marked == 0 && data.percent >= markcompleteafter  ){
+                console.warn("marked");
+                marked = 1;
+
+                $.post(
+                    "' . $CFG->wwwroot . '/webservice/rest/server.php?moodlewsrestformat=json&wsfunction=mod_leeloolxpvimeo_markcomplete_leeloolxpvimeo",
+                    {
+                        cmid:"' . $cm->id . '",
+                        completionstate:"1",
+                        userid:"' . $userid . '",
+                        wsfunction:"mod_leeloolxpvimeo_markcomplete_leeloolxpvimeo",
+                        wstoken:"' . $token . '"
+                    }, function(response){
+                        console.log("marked complete");
+                });
+
+            }
         });
 
         var timeElapsed = Cookies.get("vimeotimeElapsed' . $cm->id . '");
@@ -155,24 +175,9 @@ if ($show == 1) {
 
         player.on("ended", function() {
             console.log("ended the video!");
-
-            $.post(
-                "' . $CFG->wwwroot . '/webservice/rest/server.php?moodlewsrestformat=json&wsfunction=mod_leeloolxpvimeo_markcomplete_leeloolxpvimeo",
-                {
-                    cmid:"' . $cm->id . '",
-                    completionstate:"1",
-                    userid:"'.$userid.'",
-                    wsfunction:"mod_leeloolxpvimeo_markcomplete_leeloolxpvimeo",
-                    wstoken:"' . $token . '"
-                }, function(response){
-                    console.log("marked complete");
-            });
-
         });
 
     });
     </script>
     ';
-
 }
-

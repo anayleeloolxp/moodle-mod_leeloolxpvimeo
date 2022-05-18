@@ -94,6 +94,7 @@ if (!empty($options['printintro'])) {
 }
 
 $leeloolxplicense = get_config('mod_leeloolxpvimeo')->license;
+$markcompleteafter = get_config('mod_leeloolxpvimeo')->markcompleteafter;
 $url = 'https://leeloolxp.com/api_moodle.php/?action=page_info';
 $postdata = [
     'license_key' => $leeloolxplicense,
@@ -172,8 +173,8 @@ $formatoptions->noclean = true;
 $formatoptions->overflowdiv = true;
 $formatoptions->context = $context;
 $content = format_text($content, $leeloolxpvimeo->contentformat, $formatoptions);
-echo '<h3>'.$leeloolxpvimeo->name.'</h3>';
-echo '<p class="publisheddate">'.get_string('publishedon', 'mod_leeloolxpvimeo').date('M-d-Y',$leeloolxpvimeo->timemodified).'</p></h3>';
+echo '<h3>' . $leeloolxpvimeo->name . '</h3>';
+echo '<p class="publisheddate">' . get_string('publishedon', 'mod_leeloolxpvimeo') . date('M-d-Y', $leeloolxpvimeo->timemodified) . '</p></h3>';
 echo $OUTPUT->box($content, "generalbox center clearfix");
 global $USER;
 if ($show == 1) {
@@ -190,9 +191,40 @@ if ($show == 1) {
                 }
             });
 
+
+            var marked = 0;
+            var markcompleteafter = ' . ($markcompleteafter / 100) . ';
             player.on("timeupdate", function(data){
                 var running_time = data.seconds;
                 Cookies.set("vimeotimeElapsed' . $cm->id . '", data.seconds);
+
+                if( marked == 0 && data.percent >= markcompleteafter  ){
+                    console.warn("marked");
+                    marked = 1;
+
+                    $.post(
+                        "' . $CFG->wwwroot . '/mod/leeloolxpvimeo/markcomplete.php",
+                        {
+                            id:"' . $cm->id . '",
+                            completionstate:"1",
+                            fromajax:"1",
+                            sesskey:"' . $USER->sesskey . '"
+                        }, function(response){
+                            var autoplay = Cookies.get("autoplay");
+                            if( autoplay == 1 ){
+                                //console.log("autoplay");
+                                var nextvideo = $("#nextvideo").val();
+                                if( nextvideo != "" ){
+                                    window.location.href = nextvideo;
+                                }
+                            }else{
+                                //console.log("notautoplay");
+                            }
+                            //console.log("marked complete");
+                    });
+
+                }
+
             });
 
             var timeElapsed = Cookies.get("vimeotimeElapsed' . $cm->id . '");
@@ -202,28 +234,6 @@ if ($show == 1) {
 
             player.on("ended", function() {
                 console.log("ended the video!");
-
-                $.post(
-                    "' . $CFG->wwwroot . '/mod/leeloolxpvimeo/markcomplete.php",
-                    {
-                        id:"' . $cm->id . '",
-                        completionstate:"1",
-                        fromajax:"1",
-                        sesskey:"' . $USER->sesskey . '"
-                    }, function(response){
-                        var autoplay = Cookies.get("autoplay");
-                        if( autoplay == 1 ){
-                            //console.log("autoplay");
-                            var nextvideo = $("#nextvideo").val();
-                            if( nextvideo != "" ){
-                                window.location.href = nextvideo;
-                            }
-                        }else{
-                            //console.log("notautoplay");
-                        }
-                        //console.log("marked complete");
-                });
-
             });
 
             player.on("play", function() {
@@ -237,7 +247,6 @@ if ($show == 1) {
     });');
     echo '<script src="https://player.vimeo.com/api/player.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>';
-
 }
 
 echo $OUTPUT->footer();

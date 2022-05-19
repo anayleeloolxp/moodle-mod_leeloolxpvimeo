@@ -41,13 +41,13 @@ class moodle1_mod_leeloolxpvimeo_handler extends moodle1_resource_successor_hand
      */
     public function process_legacy_resource(array $data, array $raw = null) {
 
-        // get the course module id and context id
+        // Get the course module id and context id.
         $instanceid = $data['id'];
         $cminfo = $this->get_cminfo($instanceid, 'resource');
         $moduleid = $cminfo['id'];
         $contextid = $this->converter->get_contextid(CONTEXT_MODULE, $moduleid);
 
-        // convert the legacy data onto the new leeloolxpvimeo record
+        // Convert the legacy data onto the new leeloolxpvimeo record.
         $leeloolxpvimeo = array();
         $leeloolxpvimeo['id'] = $data['id'];
         $leeloolxpvimeo['name'] = $data['name'];
@@ -62,10 +62,10 @@ class moodle1_mod_leeloolxpvimeo_handler extends moodle1_resource_successor_hand
         $leeloolxpvimeo['content'] = $data['alltext'];
 
         if ($data['type'] === 'html') {
-            // legacy Resource of the type Web leeloolxpvimeo
+            // Legacy Resource of the type Web leeloolxpvimeo.
             $leeloolxpvimeo['contentformat'] = FORMAT_HTML;
         } else {
-            // legacy Resource of the type Plain text leeloolxpvimeo
+            // Legacy Resource of the type Plain text leeloolxpvimeo.
             $leeloolxpvimeo['contentformat'] = (int) $data['reference'];
 
             if ($leeloolxpvimeo['contentformat'] < 0 or $leeloolxpvimeo['contentformat'] > 4) {
@@ -78,7 +78,7 @@ class moodle1_mod_leeloolxpvimeo_handler extends moodle1_resource_successor_hand
         $leeloolxpvimeo['revision'] = 1;
         $leeloolxpvimeo['timemodified'] = $data['timemodified'];
 
-        // populate display and displayoptions fields
+        // Populate display and displayoptions fields.
         $options = array('printheading' => 1, 'printintro' => 0);
         if ($data['popup']) {
             $leeloolxpvimeo['display'] = RESOURCELIB_DISPLAY_POPUP;
@@ -95,20 +95,20 @@ class moodle1_mod_leeloolxpvimeo_handler extends moodle1_resource_successor_hand
         }
         $leeloolxpvimeo['displayoptions'] = serialize($options);
 
-        // get a fresh new file manager for this instance
+        // Get a fresh new file manager for this instance.
         $this->fileman = $this->converter->get_file_manager($contextid, 'mod_leeloolxpvimeo');
 
-        // convert course files embedded into the intro
+        // Convert course files embedded into the intro.
         $this->fileman->filearea = 'intro';
         $this->fileman->itemid = 0;
         $leeloolxpvimeo['intro'] = moodle1_converter::migrate_referenced_files($leeloolxpvimeo['intro'], $this->fileman);
 
-        // convert course files embedded into the content
+        // Convert course files embedded into the content.
         $this->fileman->filearea = 'content';
         $this->fileman->itemid = 0;
         $leeloolxpvimeo['content'] = moodle1_converter::migrate_referenced_files($leeloolxpvimeo['content'], $this->fileman);
 
-        // write leeloolxpvimeo.xml
+        // Write leeloolxpvimeo.xml .
         $this->open_xml_writer("activities/leeloolxpvimeo_{$moduleid}/leeloolxpvimeo.xml");
         $this->xmlwriter->begin_tag('activity', array(
             'id' => $instanceid, 'moduleid' => $moduleid,
@@ -118,7 +118,7 @@ class moodle1_mod_leeloolxpvimeo_handler extends moodle1_resource_successor_hand
         $this->xmlwriter->end_tag('activity');
         $this->close_xml_writer();
 
-        // write inforef.xml for migrated resource file.
+        // Write inforef.xml for migrated resource file.
         $this->open_xml_writer("activities/leeloolxpvimeo_{$moduleid}/inforef.xml");
         $this->xmlwriter->begin_tag('inforef');
         $this->xmlwriter->begin_tag('fileref');

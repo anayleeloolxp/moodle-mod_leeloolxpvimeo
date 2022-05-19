@@ -39,30 +39,33 @@ class backup_leeloolxpvimeo_activity_structure_step extends backup_activity_stru
      */
     protected function define_structure() {
 
-        // To know if we are including userinfo
+        // To know if we are including userinfo.
         $userinfo = $this->get_setting_value('userinfo');
 
-        // Define each element separated
+        // Define each element separated.
         $leeloolxpvimeo = new backup_nested_element('leeloolxpvimeo', array('id'), array(
-            'name', 'vimeo_video_id', 'vimeo_token', 'width', 'height', 'border', 'allow', 'intro', 'introformat', 'content', 'contentformat',
+            'name', 'vimeo_video_id', 'vimeo_token', 'width', 'height',
+            'border', 'allow', 'intro', 'introformat',
+            'content',
+            'contentformat',
             'legacyfiles', 'legacyfileslast', 'display', 'displayoptions',
             'revision', 'timemodified'
         ));
 
-        // Build the tree
-        // (love this)
+        // Build the tree.
+        // (love this).
 
-        // Define sources
+        // Define sources.
         $leeloolxpvimeo->set_source_table('leeloolxpvimeo', array('id' => backup::VAR_ACTIVITYID));
 
-        // Define id annotations
-        // (none)
+        // Define id annotations.
+        // (none).
 
-        // Define file annotations
-        $leeloolxpvimeo->annotate_files('mod_leeloolxpvimeo', 'intro', null); // This file areas haven't itemid
-        $leeloolxpvimeo->annotate_files('mod_leeloolxpvimeo', 'content', null); // This file areas haven't itemid
+        // Define file annotations.
+        $leeloolxpvimeo->annotate_files('mod_leeloolxpvimeo', 'intro', null); // This file areas haven't itemid.
+        $leeloolxpvimeo->annotate_files('mod_leeloolxpvimeo', 'content', null); // This file areas haven't itemid.
 
-        // Return the root element (leeloolxpvimeo), wrapped into standard activity structure
+        // Return the root element (leeloolxpvimeo), wrapped into standard activity structure.
         return $this->prepare_activity_structure($leeloolxpvimeo);
     }
 }

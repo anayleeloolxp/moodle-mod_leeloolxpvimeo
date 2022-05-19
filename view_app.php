@@ -101,7 +101,7 @@ if (!$output = $curl->post($url, $postdata, $options)) {
     $show = 0;
 }
 
-if (!$external_tokens = $DB->get_record('external_tokens', array('token' => $token, 'userid' => $userid))) {
+if (!$externaltokens = $DB->get_record('external_tokens', array('token' => $token, 'userid' => $userid))) {
     print_error('invalidaccessparameter');
     $show = 0;
 }

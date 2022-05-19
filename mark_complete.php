@@ -33,7 +33,7 @@ $moduleid = optional_param('cm', 0, PARAM_RAW);
 $userid = $USER->id;
 
 if (isset($moduleid) && isset($moduleid) != '' && isset($userid) && isset($userid) != '') {
-    $checkcompletion = $DB->get_record_sql('SELECT COUNT(*) iscompleted FROM {course_modules_completion} WHERE `coursemoduleid` = ? AND `userid` = ?', [$moduleid, $userid]);
+    $checkcompletion = $DB->get_record_sql("SELECT COUNT(*) iscompleted FROM {course_modules_completion} WHERE coursemoduleid = ? AND userid = ?", [$moduleid, $userid]);
 
     $iscompleted = $checkcompletion->iscompleted;
 

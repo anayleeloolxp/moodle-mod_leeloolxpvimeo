@@ -56,11 +56,11 @@ class backup_leeloolxpvimeo_activity_task extends backup_activity_task {
 
         $base = preg_quote($CFG->wwwroot, "/");
 
-        // Link to the list of leeloolxpvimeos
+        // Link to the list of leeloolxpvimeos.
         $search = "/(" . $base . "\/mod\/leeloolxpvimeo\/index.php\?id\=)([0-9]+)/";
         $content = preg_replace($search, '$@LEELOOLXPVIMEOINDEX*$2@$', $content);
 
-        // Link to leeloolxpvimeo view by moduleid
+        // Link to leeloolxpvimeo view by moduleid.
         $search = "/(" . $base . "\/mod\/leeloolxpvimeo\/view.php\?id\=)([0-9]+)/";
         $content = preg_replace($search, '$@LEELOOLXPVIMEOVIEWBYID*$2@$', $content);
 

@@ -131,7 +131,7 @@ function leeloolxpvimeo_add_instance($data, $mform = null) {
 
     $data->id = $DB->insert_record('leeloolxpvimeo', $data);
 
-    // we need to use context now, so we need to make sure all needed info is already in db
+    // We need to use context now, so we need to make sure all needed info is already in db.
     $DB->set_field('course_modules', 'instance', $data->id, array('id' => $cmid));
     $context = context_module::instance($cmid);
 
@@ -196,7 +196,7 @@ function leeloolxpvimeo_delete_instance($id) {
         return false;
     }
 
-    // note: all context files are deleted automatically
+    // Note: all context files are deleted automatically.
 
     $DB->delete_records('leeloolxpvimeo', array('id' => $leeloolxpvimeo->id));
 
@@ -227,7 +227,6 @@ function leeloolxpvimeo_get_coursemodule_info($coursemodule) {
     $info = new cached_cm_info();
     $info->name = $leeloolxpvimeo->name;
 
-    //$leeloolxplicense = get_config('mod_leeloolxpvimeo')->license;
     $url = 'https://api.vimeo.com/videos/' . $leeloolxpvimeo->vimeo_video_id;
 
     $postdata = array();
@@ -307,7 +306,7 @@ function leeloolxpvimeo_get_file_info($browser, $areas, $course, $cm, $context, 
     global $CFG;
 
     if (!has_capability('moodle/course:managefiles', $context)) {
-        // students can not peak here!
+        // Students can not peak here!
         return null;
     }
 
@@ -322,7 +321,7 @@ function leeloolxpvimeo_get_file_info($browser, $areas, $course, $cm, $context, 
             if ($filepath === '/' and $filename === '.') {
                 $storedfile = new virtual_root_file($context->id, 'mod_leeloolxpvimeo', 'content', 0);
             } else {
-                // not found
+                // Not found.
                 return null;
             }
         }
@@ -330,7 +329,7 @@ function leeloolxpvimeo_get_file_info($browser, $areas, $course, $cm, $context, 
         return new leeloolxpvimeo_content_file_info($browser, $context, $storedfile, $urlbase, $areas[$filearea], true, true, true, false);
     }
 
-    // note: leeloolxpvimeo_intro handled in file_browser automatically
+    // Note: leeloolxpvimeo_intro handled in file_browser automatically.
 
     return null;
 }
@@ -357,28 +356,24 @@ function leeloolxpvimeo_pluginfile($course, $cm, $context, $filearea, $args, $fo
         return false;
     }
 
-    // require_course_login($course, true, $cm);
-
     if (!has_capability('mod/leeloolxpvimeo:view', $context)) {
         return false;
     }
 
     if ($filearea !== 'content') {
-        // intro is handled automatically in pluginfile.php
+        // Intro is handled automatically in pluginfile.php.
         return false;
     }
 
-    // $arg could be revision number or index.html
     $arg = array_shift($args);
     if ($arg == 'index.html' || $arg == 'index.htm') {
-        // serve leeloolxpvimeo content
         $filename = $arg;
 
         if (!$leeloolxpvimeo = $DB->get_record('leeloolxpvimeo', array('id' => $cm->instance), '*', MUST_EXIST)) {
             return false;
         }
 
-        // remove @@PLUGINFILE@@/
+        // Remove @@PLUGINFILE@@/ .
         $content = str_replace('@@PLUGINFILE@@/', '', $leeloolxpvimeo->content);
 
         $formatoptions = new stdClass;

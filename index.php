@@ -24,7 +24,7 @@
 
 require('../../config.php');
 
-$id = required_param('id', PARAM_INT); // course id
+$id = required_param('id', PARAM_INT); // Course id.
 
 $course = $DB->get_record('course', array('id' => $id), '*', MUST_EXIST);
 
@@ -86,7 +86,7 @@ foreach ($leeloolxpvimeos as $leeloolxpvimeo) {
         $printsection = '<span class="smallinfo">' . userdate($leeloolxpvimeo->timemodified) . "</span>";
     }
 
-    $class = $leeloolxpvimeo->visible ? '' : 'class="dimmed"'; // hidden modules are dimmed
+    $class = $leeloolxpvimeo->visible ? '' : 'class="dimmed"'; // Hidden modules are dimmed.
 
     $table->data[] = array(
         $printsection,

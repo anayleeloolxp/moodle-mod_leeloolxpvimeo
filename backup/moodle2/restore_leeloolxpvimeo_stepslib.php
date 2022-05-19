@@ -40,7 +40,7 @@ class restore_leeloolxpvimeo_activity_structure_step extends restore_activity_st
         $paths = array();
         $paths[] = new restore_path_element('leeloolxpvimeo', '/activity/leeloolxpvimeo');
 
-        // Return the paths wrapped into standard activity structure
+        // Return the paths wrapped into standard activity structure.
         return $this->prepare_activity_structure($paths);
     }
 
@@ -56,9 +56,9 @@ class restore_leeloolxpvimeo_activity_structure_step extends restore_activity_st
         $oldid = $data->id;
         $data->course = $this->get_courseid();
 
-        // insert the leeloolxpvimeo record
+        // Insert the leeloolxpvimeo record.
         $newitemid = $DB->insert_record('leeloolxpvimeo', $data);
-        // immediately after inserting "activity" record, call this
+        // Immediately after inserting "activity" record, call this.
         $this->apply_activity_instance($newitemid);
     }
 
@@ -66,7 +66,7 @@ class restore_leeloolxpvimeo_activity_structure_step extends restore_activity_st
      * Fucntion after execute
      */
     protected function after_execute() {
-        // Add leeloolxpvimeo related files, no need to match by itemname (just internally handled context)
+        // Add leeloolxpvimeo related files, no need to match by itemname (just internally handled context).
         $this->add_related_files('mod_leeloolxpvimeo', 'intro', null);
         $this->add_related_files('mod_leeloolxpvimeo', 'content', null);
     }

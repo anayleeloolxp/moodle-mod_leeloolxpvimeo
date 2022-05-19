@@ -90,7 +90,7 @@ foreach ($videotitlearr as $videtitlesin) {
     $namesql .= ' OR v.name LIKE "%' . $videtitlesinsql . '%"';
 }
 
-$leeloolxprelatedvimeosall = $DB->get_records_sql('SELECT v.*, c.fullname coursename FROM {leeloolxpvimeo} v left join {course} c on c.id = v.course' . ' where v.course = ?' . $namesql, [$course->id], 0, 10);
+$leeloolxprelatedvimeosall = $DB->get_records_sql("SELECT v.*, c.fullname coursename FROM {leeloolxpvimeo} v left join {course} c on c.id = v.course where v.course = ?" . $namesql, [$course->id], 0, 10);
 
 $leeloolxprelatedvimeos = array_values($leeloolxprelatedvimeosall);
 
@@ -277,7 +277,7 @@ if ($show == 1) {
     $thiskey = 0;
     foreach ($leeloolxprelatedvimeos as $key => $relatedvideo) {
 
-        $leeloolxpmod = $DB->get_record_sql('SELECT cm.id FROM {course_modules} cm left join {modules} m on m.id = cm.module left join {leeloolxpvimeo} vinner on vinner.id = cm.instance where m.name = "leeloolxpvimeo" and vinner.id = ?', array($relatedvideo->id));
+        $leeloolxpmod = $DB->get_record_sql("SELECT cm.id FROM {course_modules} cm left join {modules} m on m.id = cm.module left join {leeloolxpvimeo} vinner on vinner.id = cm.instance where m.name = 'leeloolxpvimeo' and vinner.id = ?", array($relatedvideo->id));
 
         $relatedvideourl = $CFG->wwwroot . '/mod/leeloolxpvimeo/tv_single.php?id=' . $leeloolxpmod->id;
 

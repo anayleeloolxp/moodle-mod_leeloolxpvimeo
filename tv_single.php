@@ -229,17 +229,7 @@ if ($show == 1) {
                             fromajax:"1",
                             sesskey:"' . $USER->sesskey . '"
                         }, function(response){
-                            var autoplay = Cookies.get("autoplay");
-                            if( autoplay == 1 ){
-                                //console.log("autoplay");
-                                var nextvideo = $("#nextvideo").val();
-                                if( nextvideo != "" ){
-                                    window.location.href = nextvideo;
-                                }
-                            }else{
-                                //console.log("notautoplay");
-                            }
-                            //console.log("marked complete");
+                            console.log("marked complete");
                     });
 
                 }
@@ -252,6 +242,16 @@ if ($show == 1) {
 
             player.on("ended", function() {
                 console.log("ended the video!");
+                var autoplay = Cookies.get("autoplay");
+                if( autoplay == 1 ){
+                    //console.log("autoplay");
+                    var nextvideo = $("#nextvideo").val();
+                    if( nextvideo != "" ){
+                        window.location.href = nextvideo;
+                    }
+                }else{
+                    //console.log("notautoplay");
+                }
             });
 
             player.on("play", function() {

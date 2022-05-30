@@ -14,7 +14,7 @@
 }
 .vimeovideocourse {
     font-size: 80%;
-    color: #999999;
+    color: #999;
 }
 .vimeovideosin.notenrolled {
     opacity: .5;
@@ -230,7 +230,7 @@
     margin: 0 0 5px;
 }
 .related_video_item .related_video_txt p {
-    color: #999999;
+    color: #999;
     margin: 0;
     font-size: 12px;
 }
@@ -277,7 +277,7 @@
     width: 100%;
 }
 
-@media only screen and ( max-width: 1500px ) {
+@media only screen and (max-width: 1500px) {
     .search_vimeotv_left ul li {
         display: inline-block;
         margin-right: 10px;

@@ -36,12 +36,12 @@ $inpopup = optional_param('inpopup', 0, PARAM_BOOL);
 
 if ($p) {
     if (!$leeloolxpvimeo = $DB->get_record('leeloolxpvimeo', array('id' => $p))) {
-        print_error('invalidaccessparameter');
+        throw new moodle_exception('invalidaccessparameter');
     }
     $cm = get_coursemodule_from_instance('leeloolxpvimeo', $leeloolxpvimeo->id, $leeloolxpvimeo->course, false, MUST_EXIST);
 } else {
     if (!$cm = get_coursemodule_from_id('leeloolxpvimeo', $id)) {
-        print_error('invalidcoursemodule');
+        throw new moodle_exception('invalidcoursemodule');
     }
     $leeloolxpvimeo = $DB->get_record('leeloolxpvimeo', array('id' => $cm->instance), '*', MUST_EXIST);
 }
@@ -166,14 +166,24 @@ if ($leeloolxpvimeo->vimeo_video_id && $show == 1) {
     ';
 }
 
-$content = file_rewrite_pluginfile_urls($leeloolxpvimeo->content, 'pluginfile.php', $context->id, 'mod_leeloolxpvimeo', 'content', $leeloolxpvimeo->revision);
+$content = file_rewrite_pluginfile_urls(
+    $leeloolxpvimeo->content,
+    'pluginfile.php',
+    $context->id,
+    'mod_leeloolxpvimeo',
+    'content',
+    $leeloolxpvimeo->revision
+);
+
 $formatoptions = new stdClass;
 $formatoptions->noclean = true;
 $formatoptions->overflowdiv = true;
 $formatoptions->context = $context;
 $content = format_text($content, $leeloolxpvimeo->contentformat, $formatoptions);
 echo '<h3>' . $leeloolxpvimeo->name . '</h3>';
-echo '<p class="publisheddate">' . get_string('publishedon', 'mod_leeloolxpvimeo') . date('M-d-Y', $leeloolxpvimeo->timemodified) . '</p></h3>';
+echo '<p class="publisheddate">' .
+    get_string('publishedon', 'mod_leeloolxpvimeo') .
+    date('M-d-Y', $leeloolxpvimeo->timemodified) . '</p></h3>';
 echo $OUTPUT->box($content, "generalbox center clearfix");
 global $USER;
 if ($show == 1) {

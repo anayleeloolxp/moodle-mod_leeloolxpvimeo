@@ -23,8 +23,6 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die;
-
 /**
  * List of features supported in Leeloo LXP Vimeo module
  * @param string $feature FEATURE_xx constant for requested feature
@@ -137,7 +135,17 @@ function leeloolxpvimeo_add_instance($data, $mform = null) {
 
     if ($mform and !empty($data->leeloolxpvimeo['itemid'])) {
         $draftitemid = $data->leeloolxpvimeo['itemid'];
-        $data->content = file_save_draft_area_files($draftitemid, $context->id, 'mod_leeloolxpvimeo', 'content', 0, leeloolxpvimeo_get_editor_options($context), $data->content);
+
+        $data->content = file_save_draft_area_files(
+            $draftitemid,
+            $context->id,
+            'mod_leeloolxpvimeo',
+            'content',
+            0,
+            leeloolxpvimeo_get_editor_options($context),
+            $data->content
+        );
+
         $DB->update_record('leeloolxpvimeo', $data);
     }
 
@@ -177,7 +185,16 @@ function leeloolxpvimeo_update_instance($data, $mform) {
 
     $context = context_module::instance($cmid);
     if ($draftitemid) {
-        $data->content = file_save_draft_area_files($draftitemid, $context->id, 'mod_leeloolxpvimeo', 'content', 0, leeloolxpvimeo_get_editor_options($context), $data->content);
+
+        $data->content = file_save_draft_area_files(
+            $draftitemid,
+            $context->id,
+            'mod_leeloolxpvimeo',
+            'content',
+            0,
+            leeloolxpvimeo_get_editor_options($context),
+            $data->content
+        );
         $DB->update_record('leeloolxpvimeo', $data);
     }
 
@@ -326,7 +343,17 @@ function leeloolxpvimeo_get_file_info($browser, $areas, $course, $cm, $context, 
             }
         }
         require_once("$CFG->dirroot/mod/leeloolxpvimeo/locallib.php");
-        return new leeloolxpvimeo_content_file_info($browser, $context, $storedfile, $urlbase, $areas[$filearea], true, true, true, false);
+        return new leeloolxpvimeo_content_file_info(
+            $browser,
+            $context,
+            $storedfile,
+            $urlbase,
+            $areas[$filearea],
+            true,
+            true,
+            true,
+            false
+        );
     }
 
     // Note: leeloolxpvimeo_intro handled in file_browser automatically.
@@ -392,15 +419,23 @@ function leeloolxpvimeo_pluginfile($course, $cm, $context, $filearea, $args, $fo
             if ($leeloolxpvimeo->legacyfiles != RESOURCELIB_LEGACYFILES_ACTIVE) {
                 return false;
             }
-            if (!$file = resourcelib_try_file_migration('/' . $relativepath, $cm->id, $cm->course, 'mod_leeloolxpvimeo', 'content', 0)) {
+            if (
+                !$file = resourcelib_try_file_migration(
+                    '/' . $relativepath,
+                    $cm->id,
+                    $cm->course,
+                    'mod_leeloolxpvimeo',
+                    'content',
+                    0
+                )
+            ) {
                 return false;
             }
-            // file migrate - update flag
+
             $leeloolxpvimeo->legacyfileslast = time();
             $DB->update_record('leeloolxpvimeo', $leeloolxpvimeo);
         }
 
-        // finally send the file
         send_stored_file($file, null, 0, $forcedownload, $options);
     }
 }
@@ -412,7 +447,9 @@ function leeloolxpvimeo_pluginfile($course, $cm, $context, $filearea, $args, $fo
  * @param stdClass $currentcontext Current context of block
  */
 function leeloolxpvimeo_leeloolxpvimeo_type_list($leeloolxpvimeotype, $parentcontext, $currentcontext) {
-    $moduleleeloolxpvimeotype = array('mod-leeloolxpvimeo-*' => get_string('leeloolxpvimeo-mod-leeloolxpvimeo-x', 'leeloolxpvimeo'));
+    $moduleleeloolxpvimeotype = array(
+        'mod-leeloolxpvimeo-*' => get_string('leeloolxpvimeo-mod-leeloolxpvimeo-x', 'leeloolxpvimeo')
+    );
     return $moduleleeloolxpvimeotype;
 }
 
@@ -431,7 +468,6 @@ function leeloolxpvimeo_export_contents($cm, $baseurl) {
 
     $leeloolxpvimeo = $DB->get_record('leeloolxpvimeo', array('id' => $cm->instance), '*', MUST_EXIST);
 
-    // leeloolxpvimeo contents
     $fs = get_file_storage();
     $files = $fs->get_area_files($context->id, 'mod_leeloolxpvimeo', 'content', 0, 'sortorder DESC, id ASC', false);
     foreach ($files as $fileinfo) {
@@ -442,7 +478,9 @@ function leeloolxpvimeo_export_contents($cm, $baseurl) {
         $file['filesize'] = $fileinfo->get_filesize();
         $file['fileurl'] = file_encode_url(
             "$CFG->wwwroot/" . $baseurl,
-            '/' . $context->id . '/mod_leeloolxpvimeo/content/' . $leeloolxpvimeo->revision . $fileinfo->get_filepath() . $fileinfo->get_filename(),
+            '/' . $context->id .
+                '/mod_leeloolxpvimeo/content/' .
+                $leeloolxpvimeo->revision . $fileinfo->get_filepath() . $fileinfo->get_filename(),
             true
         );
         $file['timecreated'] = $fileinfo->get_timecreated();
@@ -454,17 +492,20 @@ function leeloolxpvimeo_export_contents($cm, $baseurl) {
         $contents[] = $file;
     }
 
-    // leeloolxpvimeo html conent
     $filename = 'index.html';
     $leeloolxpvimeofile = array();
     $leeloolxpvimeofile['type'] = 'file';
     $leeloolxpvimeofile['filename'] = $filename;
     $leeloolxpvimeofile['filepath'] = '/';
     $leeloolxpvimeofile['filesize'] = 0;
-    $leeloolxpvimeofile['fileurl'] = file_encode_url("$CFG->wwwroot/" . $baseurl, '/' . $context->id . '/mod_leeloolxpvimeo/content/' . $filename, true);
+    $leeloolxpvimeofile['fileurl'] = file_encode_url(
+        "$CFG->wwwroot/" . $baseurl,
+        '/' . $context->id . '/mod_leeloolxpvimeo/content/' . $filename,
+        true
+    );
     $leeloolxpvimeofile['timecreated'] = null;
     $leeloolxpvimeofile['timemodified'] = $leeloolxpvimeo->timemodified;
-    // make this file as main file
+
     $leeloolxpvimeofile['sortorder'] = 1;
     $leeloolxpvimeofile['userid'] = null;
     $leeloolxpvimeofile['author'] = null;
@@ -557,8 +598,6 @@ function leeloolxpvimeo_dndupload_handle($uploadinfo) {
     $settingleeloolxp = $resposedata->data->vimeo_videos;
     $config = $settingleeloolxp;
 
-    // Set the display options to the site defaults.
-    // $config = get_config('leeloolxpvimeo');
     $data->display = $config->display;
     $data->popupheight = $config->popupheight;
     $data->popupwidth = $config->popupwidth;

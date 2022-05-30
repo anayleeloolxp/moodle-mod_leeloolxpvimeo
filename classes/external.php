@@ -166,9 +166,25 @@ class mod_leeloolxpvimeo_external extends external_api {
                 $leeloolxpvimeo->name = external_format_string($leeloolxpvimeo->name, $context->id);
 
                 $options = array('noclean' => true);
+
                 list($leeloolxpvimeo->intro, $leeloolxpvimeo->introformat) =
-                    external_format_text($leeloolxpvimeo->intro, $leeloolxpvimeo->introformat, $context->id, 'mod_leeloolxpvimeo', 'intro', null, $options);
-                $leeloolxpvimeo->introfiles = external_util::get_area_files($context->id, 'mod_leeloolxpvimeo', 'intro', false, false);
+                    external_format_text(
+                        $leeloolxpvimeo->intro,
+                        $leeloolxpvimeo->introformat,
+                        $context->id,
+                        'mod_leeloolxpvimeo',
+                        'intro',
+                        null,
+                        $options
+                    );
+
+                $leeloolxpvimeo->introfiles = external_util::get_area_files(
+                    $context->id,
+                    'mod_leeloolxpvimeo',
+                    'intro',
+                    false,
+                    false
+                );
 
                 $options = array('noclean' => true);
                 list($leeloolxpvimeo->content, $leeloolxpvimeo->contentformat) = external_format_text(
@@ -184,7 +200,10 @@ class mod_leeloolxpvimeo_external extends external_api {
 
                 $leeloolxpvimeo->iframesrc = 'https://player.vimeo.com/video/' . $leeloolxpvimeo->vimeo_video_id;
 
-                $leeloolxpvimeo->iframesrc = $CFG->wwwroot . '/mod/leeloolxpvimeo/view_app.php?id=' . $leeloolxpvimeo->coursemodule . '&token=' . $token . '&userid=' . $USER->id;
+                $leeloolxpvimeo->iframesrc = $CFG->wwwroot .
+                    '/mod/leeloolxpvimeo/view_app.php?id=' .
+                    $leeloolxpvimeo->coursemodule .
+                    '&token=' . $token . '&userid=' . $USER->id;
 
                 $returnedleeloolxpvimeos[] = $leeloolxpvimeo;
             }
@@ -282,14 +301,6 @@ class mod_leeloolxpvimeo_external extends external_api {
         $targetstate = COMPLETION_COMPLETE;
         $thisuserid = $params['userid'];
         $fromajax = 1;
-
-        /* switch ($targetstate) {
-            case COMPLETION_COMPLETE:
-            case COMPLETION_INCOMPLETE:
-                break;
-            default:
-                print_error('unsupportedstate');
-        } */
 
         $cm = get_coursemodule_from_id(null, $params['cmid'], null, true, MUST_EXIST);
         $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);

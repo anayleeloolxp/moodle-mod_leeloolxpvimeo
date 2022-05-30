@@ -22,8 +22,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Leeloo LXP Vimeo conversion handler. This resource handler is called by moodle1_mod_resource_handler
  */

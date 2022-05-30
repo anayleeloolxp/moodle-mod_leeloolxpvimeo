@@ -24,16 +24,17 @@
  */
 
 require('../../config.php');
+require_login();
 require_once($CFG->dirroot . '/mod/leeloolxpvimeo/locallib.php');
 require_once($CFG->libdir . '/completionlib.php');
 
 global $CFG, $DB, $USER;
 require_once($CFG->libdir . '/filelib.php');
 
-$searchstring = optional_param('search', '', PARAM_RAW); // Course Module ID
-$p = optional_param('p', 1, PARAM_INT); // Page instance ID
-$limit = optional_param('limit', 12, PARAM_INT); // Page instance ID
-$sortby = optional_param('sortby', 'latest', PARAM_RAW); // Page instance ID
+$searchstring = optional_param('search', '', PARAM_RAW); // Course Module ID.
+$p = optional_param('p', 1, PARAM_INT); // Page instance ID.
+$limit = optional_param('limit', 12, PARAM_INT); // Page instance ID.
+$sortby = optional_param('sortby', 'latest', PARAM_RAW); // Page instance ID.
 
 $sortbysql = 'ORDER BY v.name ASC';
 if ($sortby == 'nameasc') {
@@ -60,7 +61,9 @@ if ($searchstring) {
 
     $leeloolxpvimeos = $DB->get_records_sql("SELECT v.*, c.fullname coursename FROM {leeloolxpvimeo} v left join {course} c on c.id = v.course where v.vimeo_video_id != '' " . $sortbysql, [], $from, $perpage);
 
-    $leeloolxpvimeoscount = $DB->get_record_sql("SELECT count(*) total FROM {leeloolxpvimeo} v left join {course} c on c.id = v.course where v.vimeo_video_id != '' ");
+    $leeloolxpvimeoscount = $DB->get_record_sql(
+        "SELECT count(*) total FROM {leeloolxpvimeo} v left join {course} c on c.id = v.course where v.vimeo_video_id != '' "
+    );
 }
 
 $leeloolxpvimeos = array_values($leeloolxpvimeos);

@@ -47,5 +47,13 @@ if ($ADMIN->fulltree) {
     $namemarkcompleteafter = 'mod_leeloolxpvimeo/markcompleteafter';
     $titlemarkcompleteafter = get_string('markcompleteafter', 'mod_leeloolxpvimeo');
     $descriptionmarkcompleteafter = get_string('markcompleteafter_description', 'mod_leeloolxpvimeo');
-    $settings->add(new admin_setting_configselect($namemarkcompleteafter, $titlemarkcompleteafter, $descriptionmarkcompleteafter, 10, $choices));
+    $settings->add(
+        new admin_setting_configselect(
+            $namemarkcompleteafter,
+            $titlemarkcompleteafter,
+            $descriptionmarkcompleteafter,
+            10,
+            $choices
+        )
+    );
 }

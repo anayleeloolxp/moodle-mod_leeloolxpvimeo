@@ -26,7 +26,7 @@
 require_once('../../config.php');
 require_once($CFG->libdir . '/completionlib.php');
 
-// Parameters
+// Parameters.
 $cmid = optional_param('id', 0, PARAM_INT);
 $courseid = optional_param('course', 0, PARAM_INT);
 $confirm = optional_param('confirm', 0, PARAM_BOOL);
@@ -36,7 +36,7 @@ $user = optional_param('user', 0, PARAM_INT);
 $rolec = optional_param('rolec', 0, PARAM_INT);
 
 if (!$cmid && !$courseid) {
-    print_error('invalidarguments');
+    throw new moodle_exception('invalidarguments');
 }
 
 $targetstate = required_param('completionstate', PARAM_INT);
@@ -49,19 +49,19 @@ switch ($targetstate) {
     case COMPLETION_INCOMPLETE:
         break;
     default:
-        print_error('unsupportedstate');
+        throw new moodle_exception('unsupportedstate');
 }
 
-// Get course-modules entry
+// Get course-modules entry.
 $cm = get_coursemodule_from_id(null, $cmid, null, true, MUST_EXIST);
 $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
 
-// Check user is logged in
+// Check user is logged in.
 require_login($course, false, $cm);
 require_capability('moodle/course:togglecompletion', context_module::instance($cmid));
 
 if (isguestuser() or !confirm_sesskey()) {
-    print_error('error');
+    throw new moodle_exception('error');
 }
 
 // Set up completion object and check it is enabled.
@@ -72,24 +72,19 @@ if (!$completion->is_enabled()) {
     throw new moodle_exception('completionnotenabled', 'completion');
 }
 
-// NOTE: All users are allowed to toggle their completion state, including
-// users for whom completion information is not directly tracked. (I.e. even
-// if you are a teacher, or admin who is not enrolled, you can still toggle
-// your own completion state. You just don't appear on the reports.)
-
-// Check completion state is manual
+// Check completion state is manual.
 if ($cm->completion != COMPLETION_TRACKING_MANUAL) {
     error_or_ajax('cannotmanualctrack', $fromajax);
 }
 
 $completion->update_state($cm, $targetstate);
 
-// And redirect back to course
+// And redirect back to course.
 if ($fromajax) {
     print 'OK';
 } else {
     // In case of use in other areas of code we allow a 'backto' parameter,
-    // otherwise go back to course page
+    // Otherwise go back to course page.
 
     if ($backto = optional_param('backto', null, PARAM_URL)) {
         redirect($backto);
@@ -98,7 +93,7 @@ if ($fromajax) {
     }
 }
 
-// utility functions
+// Utility functions.
 /**
  * Ajax check
  *
@@ -110,6 +105,6 @@ function error_or_ajax($message, $fromajax) {
         print get_string($message, 'error');
         exit;
     } else {
-        print_error($message);
+        throw new moodle_exception($message);
     }
 }

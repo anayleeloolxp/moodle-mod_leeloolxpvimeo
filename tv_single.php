@@ -30,18 +30,18 @@ require_once($CFG->libdir . '/completionlib.php');
 global $CFG;
 require_once($CFG->libdir . '/filelib.php');
 
-$id = optional_param('id', 0, PARAM_INT); // Course Module ID
-$p = optional_param('p', 0, PARAM_INT); // Page instance ID
+$id = optional_param('id', 0, PARAM_INT); // Course Module ID.
+$p = optional_param('p', 0, PARAM_INT); // Page instance ID.
 $inpopup = optional_param('inpopup', 0, PARAM_BOOL);
 
 if ($p) {
     if (!$leeloolxpvimeo = $DB->get_record('leeloolxpvimeo', array('id' => $p))) {
-        print_error('invalidaccessparameter');
+        throw new moodle_exception('invalidaccessparameter');
     }
     $cm = get_coursemodule_from_instance('leeloolxpvimeo', $leeloolxpvimeo->id, $leeloolxpvimeo->course, false, MUST_EXIST);
 } else {
     if (!$cm = get_coursemodule_from_id('leeloolxpvimeo', $id)) {
-        print_error('invalidcoursemodule');
+        throw new moodle_exception('invalidcoursemodule');
     }
     $leeloolxpvimeo = $DB->get_record('leeloolxpvimeo', array('id' => $cm->instance), '*', MUST_EXIST);
 }
@@ -62,10 +62,9 @@ $event->add_record_snapshot('course', $course);
 $event->add_record_snapshot('leeloolxpvimeo', $leeloolxpvimeo);
 $event->trigger();
 
-// Update 'viewed' state if required by completion system
+// Update 'viewed' state if required by completion system.
 require_once($CFG->libdir . '/completionlib.php');
 $completion = new completion_info($course);
-// $completion->set_module_viewed($cm);
 
 $PAGE->set_url('/mod/leeloolxpvimeo/tv_single.php', array('id' => $cm->id));
 
@@ -74,10 +73,8 @@ $options = empty($leeloolxpvimeo->displayoptions) ? array() : unserialize($leelo
 if ($inpopup and $leeloolxpvimeo->display == RESOURCELIB_DISPLAY_POPUP) {
     $PAGE->set_pagelayout('popup');
     $PAGE->set_title($course->shortname . ': ' . $leeloolxpvimeo->name);
-    //$PAGE->set_heading($course->fullname);
 } else {
     $PAGE->set_title($course->shortname . ': ' . $leeloolxpvimeo->name);
-    //$PAGE->set_heading($course->fullname);
     $PAGE->set_activity_record($leeloolxpvimeo);
 }
 echo $OUTPUT->header();
@@ -188,14 +185,23 @@ if ($leeloolxpvimeo->vimeo_video_id && $show == 1) {
     ';
 }
 
-$content = file_rewrite_pluginfile_urls($leeloolxpvimeo->content, 'pluginfile.php', $context->id, 'mod_leeloolxpvimeo', 'content', $leeloolxpvimeo->revision);
+$content = file_rewrite_pluginfile_urls(
+    $leeloolxpvimeo->content,
+    'pluginfile.php',
+    $context->id,
+    'mod_leeloolxpvimeo',
+    'content',
+    $leeloolxpvimeo->revision
+);
 $formatoptions = new stdClass;
 $formatoptions->noclean = true;
 $formatoptions->overflowdiv = true;
 $formatoptions->context = $context;
 $content = format_text($content, $leeloolxpvimeo->contentformat, $formatoptions);
 echo '<h3>' . $leeloolxpvimeo->name . '</h3>';
-echo '<p class="publisheddate">' . get_string('publishedon', 'mod_leeloolxpvimeo') . date('M-d-Y', $leeloolxpvimeo->timemodified) . '</p></h3>';
+echo '<p class="publisheddate">' .
+    get_string('publishedon', 'mod_leeloolxpvimeo') .
+    date('M-d-Y', $leeloolxpvimeo->timemodified) . '</p></h3>';
 echo $OUTPUT->box($content, "generalbox center clearfix");
 global $USER;
 if ($show == 1) {
@@ -277,7 +283,10 @@ if ($show == 1) {
     $thiskey = 0;
     foreach ($leeloolxprelatedvimeos as $key => $relatedvideo) {
 
-        $leeloolxpmod = $DB->get_record_sql("SELECT cm.id FROM {course_modules} cm left join {modules} m on m.id = cm.module left join {leeloolxpvimeo} vinner on vinner.id = cm.instance where m.name = 'leeloolxpvimeo' and vinner.id = ?", array($relatedvideo->id));
+        $leeloolxpmod = $DB->get_record_sql(
+            "SELECT cm.id FROM {course_modules} cm left join {modules} m on m.id = cm.module left join {leeloolxpvimeo} vinner on vinner.id = cm.instance where m.name = 'leeloolxpvimeo' and vinner.id = ?",
+            array($relatedvideo->id)
+        );
 
         $relatedvideourl = $CFG->wwwroot . '/mod/leeloolxpvimeo/tv_single.php?id=' . $leeloolxpmod->id;
 

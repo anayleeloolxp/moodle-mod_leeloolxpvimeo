@@ -24,8 +24,6 @@
 
 namespace mod_leeloolxpvimeo\event;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * The mod_leeloolxpvimeo course module viewed event class.
  *

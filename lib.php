@@ -261,7 +261,9 @@ function leeloolxpvimeo_get_coursemodule_info($coursemodule) {
 
     $output = $curl->post($url, $postdata, $curloptions);
     $arroutput = json_decode($output);
-    $info->iconurl = $arroutput->pictures->base_link;
+    if (isset($arroutput->pictures->base_link) && isset($arroutput->pictures->base_link) != '') {
+        $info->iconurl = $arroutput->pictures->base_link;
+    }
 
     if ($coursemodule->showdescription) {
         // Convert intro to html. Do not filter cached version, filters run at display time.
@@ -281,7 +283,9 @@ function leeloolxpvimeo_get_coursemodule_info($coursemodule) {
     $options = empty($leeloolxpvimeo->displayoptions) ? array() : unserialize($leeloolxpvimeo->displayoptions);
     $width = empty($options['popupwidth']) ? 620 : $options['popupwidth'];
     $height = empty($options['popupheight']) ? 450 : $options['popupheight'];
-    $wh = "width=$width,height=$height,toolbar=no,location=no,menubar=no,copyhistory=no,status=no,directories=no,scrollbars=yes,resizable=yes";
+    $wh = "width=$width,height=$height," .
+        "toolbar=no,location=no,menubar=no,copyhistory=no,status=no," .
+        "directories=no,scrollbars=yes,resizable=yes";
     $info->onclick = "window.open('$fullurl', '', '$wh'); return false;";
 
     return $info;

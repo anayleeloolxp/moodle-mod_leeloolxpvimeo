@@ -81,10 +81,10 @@ echo $OUTPUT->header();
 
 $videotitlearr = explode(' ', $leeloolxpvimeo->name);
 
-$namesql = '';
+$namesql = "";
 foreach ($videotitlearr as $videtitlesin) {
     $videtitlesinsql = str_ireplace('?', '', $videtitlesin);
-    $namesql .= ' OR v.name LIKE "%' . $videtitlesinsql . '%"';
+    $namesql .= " OR v.name LIKE '%" . $videtitlesinsql . "%'";
 }
 
 $leeloolxprelatedvimeosall = $DB->get_records_sql(

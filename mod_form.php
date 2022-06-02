@@ -114,7 +114,12 @@ class mod_leeloolxpvimeo_mod_form extends moodleform_mod {
 
         $mform->addElement('header', 'contentsection', get_string('contentheader', 'leeloolxpvimeo'));
 
-        $mform->addElement('float', 'vimeo_video_id', get_string('regular_vimeo_video_id', 'leeloolxpvimeo'), array('size' => '48'));
+        $mform->addElement(
+            'float',
+            'vimeo_video_id',
+            get_string('regular_vimeo_video_id', 'leeloolxpvimeo'),
+            array('size' => '48')
+        );
         $mform->addElement('text', 'vimeo_token', get_string('regular_vimeo_token', 'leeloolxpvimeo'), array('size' => '48'));
         $mform->setDefault('vimeo_token', $config->vimeo_token);
 
@@ -131,7 +136,13 @@ class mod_leeloolxpvimeo_mod_form extends moodleform_mod {
             $mform->setType('allow', PARAM_CLEANHTML);
         }
 
-        $mform->addElement('editor', 'leeloolxpvimeo', get_string('content', 'leeloolxpvimeo'), null, leeloolxpvimeo_get_editor_options($this->context));
+        $mform->addElement(
+            'editor',
+            'leeloolxpvimeo',
+            get_string('content', 'leeloolxpvimeo'),
+            null,
+            leeloolxpvimeo_get_editor_options($this->context)
+        );
         $mform->addRule('leeloolxpvimeo', get_string('required'), 'required', null, 'client');
 
         $mform->addElement('header', 'appearancehdr', get_string('appearance'));
@@ -172,7 +183,7 @@ class mod_leeloolxpvimeo_mod_form extends moodleform_mod {
         $mform->addElement('advcheckbox', 'printintro', get_string('printintro', 'leeloolxpvimeo'));
         $mform->setDefault('printintro', $config->printintro);
 
-        // Add legacy files flag only if used
+        // Add legacy files flag only if used.
         if (isset($this->current->legacyfiles) and $this->current->legacyfiles != RESOURCELIB_LEGACYFILES_NO) {
             $options = array(
                 RESOURCELIB_LEGACYFILES_DONE => get_string('legacyfilesdone', 'leeloolxpvimeo'),

@@ -87,7 +87,18 @@ foreach ($videotitlearr as $videtitlesin) {
     $namesql .= ' OR v.name LIKE "%' . $videtitlesinsql . '%"';
 }
 
-$leeloolxprelatedvimeosall = $DB->get_records_sql("SELECT v.*, c.fullname coursename FROM {leeloolxpvimeo} v left join {course} c on c.id = v.course where v.course = ?" . $namesql, [$course->id], 0, 10);
+$leeloolxprelatedvimeosall = $DB->get_records_sql(
+    "SELECT
+        v.*,
+        c.fullname coursename
+    FROM {leeloolxpvimeo} v
+    left join {course} c
+        on c.id = v.course
+    where v.course = ?" . $namesql,
+    [$course->id],
+    0,
+    10
+);
 
 $leeloolxprelatedvimeos = array_values($leeloolxprelatedvimeosall);
 
@@ -155,7 +166,29 @@ if ($_COOKIE['autoplay'] == 1) {
     $autoplaychecked = '';
 }
 
-echo '<div class="search_vimeotv_nav"><div class="search_vimeotv_left"><ul><li><a href="' . $CFG->wwwroot . '"><img src="' . $CFG->wwwroot . '/mod/leeloolxpvimeo/pix/home-icn-img.png"></a></li><li><a href="' . $courseurl . '"><div class="vimeotv-iim"><div class="vimeotv-im"><img src="' . leeloolxpvimeo_course_image($course) . '"></div><div class="vimeotv-txtt"><p>' . $course->fullname . '</p></div></div></a></li></ul></div> <div class="search_vimeotv_div"><form method="GET" action="' . $CFG->wwwroot . '/mod/leeloolxpvimeo/tv.php" ><input class="search_vimeotv" name="search" value="" placeholder="Search Videos"> <button class="search_vimeotv_btn">Search</button></form></div><div class="search_vimeotv_right"><div class="vimeotv_auto">Autoplay <span><input ' . $autoplaychecked . ' type="checkbox" name="autoplay_vimeo" id="autoplay_vimeo" /><label for="autoplay_vimeo"></label></span></div><div class="vimeotv_close"><a href="' . $courseurl . '">X</a></div></div></div>';
+echo '<div class="search_vimeotv_nav">' .
+    '<div class="search_vimeotv_left">' .
+    '<ul><li><a href="' . $CFG->wwwroot . '">' .
+    '<img src="' . $CFG->wwwroot . '/mod/leeloolxpvimeo/pix/home-icn-img.png">' .
+    '</a></li>' .
+    '<li><a href="' . $courseurl . '">' .
+    '<div class="vimeotv-iim"><div class="vimeotv-im">' .
+    '<img src="' . leeloolxpvimeo_course_image($course) . '">' .
+    '</div><div class="vimeotv-txtt">' .
+    '<p>' . $course->fullname . '</p>' .
+    '</div></div></a></li>' .
+    '</ul>' .
+    '</div>' .
+    '<div class="search_vimeotv_div">' .
+    '<form method="GET" action="' . $CFG->wwwroot . '/mod/leeloolxpvimeo/tv.php" >' .
+    '<input class="search_vimeotv" name="search" value="" placeholder="Search Videos">' .
+    '<button class="search_vimeotv_btn">Search</button>' .
+    '</form></div>' .
+    '<div class="search_vimeotv_right"><div class="vimeotv_auto">Autoplay <span>' .
+    '<input ' . $autoplaychecked . ' type="checkbox" name="autoplay_vimeo" id="autoplay_vimeo" />' .
+    '<label for="autoplay_vimeo"></label></span>' .
+    '</div><div class="vimeotv_close">' .
+    '<a href="' . $courseurl . '">X</a></div></div></div>';
 
 echo '<div class="tv_single_page_container"><div class="tv_single_page_left">';
 
@@ -284,7 +317,14 @@ if ($show == 1) {
     foreach ($leeloolxprelatedvimeos as $key => $relatedvideo) {
 
         $leeloolxpmod = $DB->get_record_sql(
-            "SELECT cm.id FROM {course_modules} cm left join {modules} m on m.id = cm.module left join {leeloolxpvimeo} vinner on vinner.id = cm.instance where m.name = 'leeloolxpvimeo' and vinner.id = ?",
+            "SELECT
+                cm.id
+            FROM {course_modules} cm
+            left join {modules} m
+                on m.id = cm.module
+            left join {leeloolxpvimeo} vinner
+                on vinner.id = cm.instance
+            where m.name = 'leeloolxpvimeo' and vinner.id = ?",
             array($relatedvideo->id)
         );
 

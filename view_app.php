@@ -24,6 +24,7 @@
  */
 
 require('../../config.php');
+require_login();
 require_once($CFG->dirroot . '/mod/leeloolxpvimeo/locallib.php');
 require_once($CFG->libdir . '/completionlib.php');
 
@@ -135,6 +136,9 @@ if ($leeloolxpvimeo->vimeo_video_id && $show == 1) {
 }
 
 if ($show == 1) {
+    $ajaxurlmarkcomplete = $CFG->wwwroot . '/webservice/rest/server.php' .
+        '?moodlewsrestformat=json&wsfunction=mod_leeloolxpvimeo_markcomplete_leeloolxpvimeo';
+
     echo '
     <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
     <script src="https://player.vimeo.com/api/player.js"></script>
@@ -154,7 +158,7 @@ if ($show == 1) {
                 marked = 1;
 
                 $.post(
-                    "' . $CFG->wwwroot . '/webservice/rest/server.php?moodlewsrestformat=json&wsfunction=mod_leeloolxpvimeo_markcomplete_leeloolxpvimeo",
+                    "' . $ajaxurlmarkcomplete . '",
                     {
                         cmid:"' . $cm->id . '",
                         completionstate:"1",
